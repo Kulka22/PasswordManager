@@ -38,27 +38,5 @@ namespace PasswordManager.Crypto
             rng.GetBytes(salt);
             return salt;
         }
-
-        //public static byte[] MakeKey(string password)
-        //{
-        //    byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-
-        //    byte[] hashPassword = SHA256.HashData(passwordBytes);
-
-        //    return hashPassword; //Возвращает хэшированый мастер-пароль
-        //}
-
-        //public static bool ComparePasswords(string inputPassword, 
-        //    byte[] realHashPassword)
-        //{
-        //    byte[] passwordBytes = Encoding.UTF8.GetBytes(inputPassword);
-
-        //    byte[] hashPassword = SHA256.HashData(passwordBytes);
-
-        //    //Сравниваем хэшированные версии паролей
-        //    if (realHashPassword.SequenceEqual(hashPassword))
-        //        return true;
-        //    return false;
-        //}
     }
 }

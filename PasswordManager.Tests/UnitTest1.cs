@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using PasswordManager.Crypto;
 using PasswordManager.Data;
 using static PasswordManager.Data.DataManager.JsonManager;
+using static PasswordManager.Core.Core;
 
 namespace PasswordManager.Tests
 {
@@ -43,6 +44,31 @@ namespace PasswordManager.Tests
                 $"{passwords[0].Login} {passwords[0].Password}";
 
             Assert.Equal("VK vk.com abc 12345", result);
+        }
+
+        [Fact]
+        public void Test3()
+        {
+            string password = "qwerty";
+            List<PasswordEntry> passwords = new List<PasswordEntry>();
+            passwords.Add(new PasswordEntry()
+            {
+                Login = "abc",
+                Password = "12345",
+                Service = "VK",
+                Url = "vk.com"
+            });
+            SaveData(passwords, password, "test3.json");
+            
+            List<PasswordEntry> comparedPasswords = LoadData(password, "test3.json");
+
+            string result = $"{comparedPasswords[0].Service} {comparedPasswords[0].Url} " +
+                $"{comparedPasswords[0].Login} {comparedPasswords[0].Password}";
+
+            string expected = $"{passwords[0].Service} {passwords[0].Url} " +
+                $"{passwords[0].Login} {passwords[0].Password}";
+
+            Assert.Equal(expected, result);
         }
     }
 }

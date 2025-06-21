@@ -1,13 +1,29 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using PasswordManager.Core;
 
 namespace PasswordManager.Crypto
 {
     public class CryptoManager
     {
-
         public class EncryptManager
         {
+            //public string EncryptPasswords(List<PasswordEntry> entries, byte[] dataKey)
+            //{
+            //    byte[] salt = KeyManager.GenerateSalt(); // Новая соль при каждом шифровании
+            //    byte[] key = DeriveDataKey(dataKey, salt); // Доп. производный ключ
+
+            //    string json = JsonConvert.SerializeObject(entries);
+            //    byte[] encrypted = AesEncrypt(Encoding.UTF8.GetBytes(json), key);
+
+            //    // Комбинируем соль + данные
+            //    byte[] result = new byte[salt.Length + encrypted.Length];
+            //    Buffer.BlockCopy(salt, 0, result, 0, salt.Length);
+            //    Buffer.BlockCopy(encrypted, 0, result, salt.Length, encrypted.Length);
+
+            //    return Convert.ToBase64String(result);
+            //}
+
             public static byte[] EncryptData(byte[] plainData, byte[] key)
             {
                 using (Aes aes = Aes.Create())
