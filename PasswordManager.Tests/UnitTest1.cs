@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using PasswordManager.Crypto;
 using PasswordManager.Data;
 using static PasswordManager.Data.DataManager.JsonManager;
@@ -26,7 +27,22 @@ namespace PasswordManager.Tests
         [Fact]
         public void Test2()
         {
-            PasswordEntry pe = new PasswordEntry();
+            PasswordEntry pe = new PasswordEntry() { Service = "VK", Login = "abc",
+            Password = "12345", Url = "vk.com"};
+            string password = "qwerty";
+            byte[] salt = KeyManager.GenerateSalt();
+            byte[] key = KeyManager.MakeKey(password, salt);
+
+            UpdatePassword(pe, key);
+
+            byte[] encrJsonArr = DataManager.FileManager.ReadEncryptedFile("psw.json");
+            byte[] decrJsonArr = CryptoManager.DecryptManager.DecryptData(encrJsonArr, key);
+            string jsonStr = DataManager.EncodeManager.MakeStringFromByteArr(decrJsonArr);
+            var passwords = JsonConvert.DeserializeObject<List<PasswordEntry>>(jsonStr);
+            string result = $"{passwords[0].Service} {passwords[0].Url} " +
+                $"{passwords[0].Login} {passwords[0].Password}";
+
+            Assert.Equal("VK vk.com abc 12345", result);
         }
     }
 }
