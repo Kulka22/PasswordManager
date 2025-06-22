@@ -1,28 +1,58 @@
-﻿namespace PasswordManager.Core
+﻿using PasswordManager.Data;
+using PasswordManager.Crypto;
+using static PasswordManager.Data.DataManager.JsonManager;
+
+namespace PasswordManager.Core
 {
-    public class Core
+    public class MainProcess
     {
-        private static PasswordEntry _passwords;
-        private static readonly string _filePath = "psw.json";
-        public static byte[] _salt;
-        public class PasswordEntry
+        private string _masterPassword;
+        private readonly string _filePath = "psw.json";
+        private List<PasswordEntry> _passwords;
+
+        public MainProcess(string masterPassword)
         {
-            public string Service { get; set; }
-            public string Url { get; set; }
-            public string Login { get; set; }
-            public string Password { get; set; }
+            _masterPassword = masterPassword;
+            _passwords = LoadData(masterPassword, _filePath);
         }
 
-        //public class VaultFile
-        //{
-        //    public string MetaData { get; set; }
-        //    public string Entries { get; set; }
-        //}
+        public void AddPassword(PasswordEntry password)
+        {
+            password.ID = Guid.NewGuid().ToString();
+            _passwords.Add(password);
+        }
 
-        //public class MetaDataFile
+        public void ChangePassword(string ID, PasswordEntry changedPassword)
+        {
+            for (int i = 0; i < _passwords.Count; i++)
+            {
+                if (_passwords[i].ID == ID)
+                {
+                    _passwords[i] = changedPassword;
+                    return;
+                }
+            }
+
+            throw new Exception("ID not found");
+        }
+
+        public List<PasswordEntry> GetPasswords()
+        {
+            return _passwords;
+        }
+
+        public void SavePasswords()
+        {
+            SaveData(_passwords, _masterPassword, _filePath);
+        }
+
+        //public class PasswordEntry
         //{
-        //    public string Salt { get; set; }
-        //    public string MasterPasswordHash { get; set; }
+        //    public string Service { get; set; }
+        //    public string Url { get; set; }
+        //    public string Category { get; set; }
+        //    public string Login { get; set; }
+        //    public string Password { get; set; }
         //}
     }
 }

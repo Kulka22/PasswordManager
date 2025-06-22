@@ -4,7 +4,6 @@ using static PasswordManager.Crypto.KeyManager;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using static PasswordManager.Core.Core;
 
 namespace PasswordManager.Data
 {
@@ -40,6 +39,16 @@ namespace PasswordManager.Data
         public class JsonManager
         {
             private const string _filePath = "psw.json";
+
+            public class PasswordEntry
+            {
+                public string ID { get; set; } = Guid.NewGuid().ToString();
+                public string Service { get; set; }
+                public string Url { get; set; }
+                public string Category { get; set; }
+                public string Login { get; set; }
+                public string Password { get; set; }
+            }
 
             public static void SaveData(List<PasswordEntry> passwords,
                 string masterPassword, string filePath)
@@ -88,7 +97,10 @@ namespace PasswordManager.Data
             public static List<PasswordEntry> LoadData(string masterPassword, string filePath)
             {
                 if (!File.Exists(filePath))
-                    throw new FileNotFoundException("Vault file not found.", filePath);
+                {
+                    //using (File.Create(filePath)) { }
+                    return new List<PasswordEntry>();
+                }
 
                 byte[] fileBytes = File.ReadAllBytes(filePath);
 
