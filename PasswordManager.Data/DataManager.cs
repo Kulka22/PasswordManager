@@ -9,20 +9,6 @@ namespace PasswordManager.Data
 {
     public class DataManager
     {
-        public class FileManager
-        {
-            public static byte[] ReadEncryptedFile(string filePath)
-            {
-                return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
-            }
-
-            // Записывает уже зашифрованные данные в файл
-            public static void WriteEncryptedFile(string filePath, byte[] encryptedData)
-            {
-                File.WriteAllBytes(filePath, encryptedData);
-            }
-        }
-
         public class EncodeManager
         {
             public static byte[] MakeByteArr(string inputString)
@@ -81,7 +67,7 @@ namespace PasswordManager.Data
                     if (isFirstRun)
                         File.Move(tempFile, filePath);
                     else
-                        File.Replace(tempFile, filePath, null);
+                        File.Copy(tempFile, filePath, overwrite: true);
                 }
                 finally
                 {
@@ -98,7 +84,6 @@ namespace PasswordManager.Data
             {
                 if (!File.Exists(filePath))
                 {
-                    //using (File.Create(filePath)) { }
                     return new List<PasswordEntry>();
                 }
 
@@ -132,61 +117,6 @@ namespace PasswordManager.Data
 
                 var passwords = JsonConvert.DeserializeObject<List<PasswordEntry>>(json);
                 return passwords ?? new List<PasswordEntry>();
-            }
-
-
-            public static void UpdatePassword(PasswordEntry newEntry, byte[] key)
-            {
-                // 0. Проверяем существование файла
-                bool isFirstRun = !File.Exists(_filePath);
-                List<PasswordEntry> passwords;
-
-                // 1. Загружаем существующие данные или создаём новый список
-                if (!isFirstRun)
-                {
-                    byte[] encryptedData = File.ReadAllBytes(_filePath);
-                    byte[] jsonByteArr = DecryptManager.DecryptData(encryptedData, key);
-                    string strJson = EncodeManager.MakeStringFromByteArr(jsonByteArr);
-                    passwords = JsonConvert.DeserializeObject<List<PasswordEntry>>(strJson);
-                    CryptographicOperations.ZeroMemory(encryptedData);
-                }
-                else
-                {
-                    passwords = new List<PasswordEntry>();
-                }
-
-                // 2. Добавляем новую запись
-                passwords.Add(newEntry);
-                string updatedJsonStr = JsonConvert.SerializeObject(passwords);
-                byte[] updJsonByteArr = EncodeManager.MakeByteArr(updatedJsonStr);
-
-                // 3. Шифруем данные
-                byte[] newEncryptedData = EncryptManager.EncryptData(updJsonByteArr, key);
-
-                // 4. Безопасное сохранение
-                string tempFile = Path.GetTempFileName();
-                try
-                {
-                    File.WriteAllBytes(tempFile, newEncryptedData);
-
-                    // Разная логика для первого и последующих запусков
-                    if (isFirstRun)
-                    {
-                        File.Move(tempFile, _filePath);
-                    }
-                    else
-                    {
-                        File.Replace(tempFile, _filePath, null);
-                    }
-                }
-                finally
-                {
-                    if (File.Exists(tempFile))
-                        File.Delete(tempFile);
-                }
-
-                // 5. Очистка следов в памяти
-                CryptographicOperations.ZeroMemory(newEncryptedData);
             }
         }
     }

@@ -29,29 +29,6 @@ namespace PasswordManager.Crypto
                     }
                 }
             }
-
-            public static string EncryptJsonToMemory(string json, byte[] key)
-            {
-                byte[] iv = new byte[16];
-                using var rng = RandomNumberGenerator.Create();
-                rng.GetBytes(iv);
-
-                using var aes = Aes.Create();
-                aes.Key = key;
-                aes.IV = iv;
-
-                using var memoryStream = new MemoryStream();
-                memoryStream.Write(iv, 0, iv.Length);
-
-                using var cryptoStream = new CryptoStream(memoryStream,
-                    aes.CreateEncryptor(), CryptoStreamMode.Write);
-
-                byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
-                cryptoStream.Write(jsonBytes, 0, jsonBytes.Length);
-                cryptoStream.FlushFinalBlock();
-
-                return Convert.ToBase64String(memoryStream.ToArray());
-            }
         }
 
         public class DecryptManager
@@ -81,26 +58,6 @@ namespace PasswordManager.Crypto
                         return ms.ToArray();
                     }
                 }
-            }
-
-            public static string DecryptJsonFromMemory(string encryptedBase64, byte[] key)
-            {
-                byte[] encryptedData = Convert.FromBase64String(encryptedBase64);
-
-                using var memoryStream = new MemoryStream(encryptedData);
-                byte[] iv = new byte[16];
-                memoryStream.Read(iv, 0, iv.Length);
-
-                using var aes = Aes.Create();
-                aes.Key = key;
-                aes.IV = iv;
-
-                using var cryptoStream = new CryptoStream(memoryStream,
-                    aes.CreateDecryptor(), CryptoStreamMode.Read);
-                using var resultStream = new MemoryStream();
-
-                cryptoStream.CopyTo(resultStream);
-                return Encoding.UTF8.GetString(resultStream.ToArray());
             }
         }
     }

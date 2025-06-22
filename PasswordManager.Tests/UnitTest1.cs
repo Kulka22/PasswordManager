@@ -59,50 +59,32 @@ namespace PasswordManager.Tests
             Assert.Equal(expected, result);
         }
 
-        //[Fact]
-        //public void Test2()
-        //{
-        //    PasswordEntry pe = new PasswordEntry() { Service = "VK", Login = "abc",
-        //    Password = "12345", Url = "vk.com"};
-        //    string password = "qwerty";
-        //    byte[] salt = KeyManager.GenerateSalt();
-        //    byte[] key = KeyManager.MakeKey(password, salt);
+        [Fact]
+        public void Test5()
+        {
+            MainProcess main = new MainProcess("qwerty");
+            List<PasswordEntry> passwords = main.GetPasswords();
+            PasswordEntry original = passwords[0];
+            PasswordEntry password = new PasswordEntry()
+            {
+                ID = original.ID,
+                Service = original.Service,
+                Url = original.Url,
+                Login = "NEWLOGIN",
+                Password = original.Password,
+                Category = original.Category
+            };
+            main.ChangePassword(password.ID, password);
+            main.SavePasswords();
 
-        //    UpdatePassword(pe, key);
+            main = new MainProcess("qwerty");
+            List<PasswordEntry> gettedPsws = main.GetPasswords();
+            //string expected = "2 VK newLogin 12345";
+            string expected = $"{passwords.Count} {original.Service} NEWLOGIN {original.Password}";
+            string result = $"{gettedPsws.Count} {gettedPsws[0].Service} {gettedPsws[0].Login} " +
+                $"{gettedPsws[0].Password}";
 
-        //    byte[] encrJsonArr = DataManager.FileManager.ReadEncryptedFile("psw.json");
-        //    byte[] decrJsonArr = CryptoManager.DecryptManager.DecryptData(encrJsonArr, key);
-        //    string jsonStr = DataManager.EncodeManager.MakeStringFromByteArr(decrJsonArr);
-        //    var passwords = JsonConvert.DeserializeObject<List<PasswordEntry>>(jsonStr);
-        //    string result = $"{passwords[0].Service} {passwords[0].Url} " +
-        //        $"{passwords[0].Login} {passwords[0].Password}";
-
-        //    Assert.Equal("VK vk.com abc 12345", result);
-        //}
-
-        //[Fact]
-        //public void Test3()
-        //{
-        //    string password = "qwerty";
-        //    List<PasswordEntry> passwords = new List<PasswordEntry>();
-        //    passwords.Add(new PasswordEntry()
-        //    {
-        //        Login = "abc",
-        //        Password = "12345",
-        //        Service = "VK",
-        //        Url = "vk.com"
-        //    });
-        //    SaveData(passwords, password, "test3.json");
-
-        //    List<PasswordEntry> comparedPasswords = LoadData(password, "test3.json");
-
-        //    string result = $"{comparedPasswords[0].Service} {comparedPasswords[0].Url} " +
-        //        $"{comparedPasswords[0].Login} {comparedPasswords[0].Password}";
-
-        //    string expected = $"{passwords[0].Service} {passwords[0].Url} " +
-        //        $"{passwords[0].Login} {passwords[0].Password}";
-
-        //    Assert.Equal(expected, result);
-        //}
+            Assert.Equal(expected, result);
+        }
     }
 }
