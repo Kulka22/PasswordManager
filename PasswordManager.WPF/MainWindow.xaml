@@ -5,8 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PasswordManager.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="800">
     <Grid>
+        <Button Content="Добавить запись" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="40" Width="110" Click="Add"/>
+        <ListBox ItemsSource="{Binding Items }" BorderThickness="0" Margin="0,60,0,0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Текстовые поля -->
+                        <TextBox Text="{Binding Addres, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5" IsReadOnly="True"/>
+                        <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5" IsReadOnly="True"/>
+                        <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5" IsReadOnly="True"/>
 
+                        <!-- Кнопки -->
+                        <Button Command="{Binding ChangeVisibilityCommand }" Margin="5" Width="30" Height="30">
+                            <Image Source="/Images/eye.png" Width="20" Height="20" Stretch="Uniform"/>
+                        </Button>
+                        <Button Command="{Binding ChangeCommand}" Margin="5" Width="30" Height="30">
+                            <Image Source="/Images/pencil.png" Width="20" Height="20"/>
+                        </Button>
+                        <Button Command="{Binding DeleteCommand}" Margin="5" Width="30" Height="30">
+                            <Image Source="/Images/close.png" Width="20" Height="20"/>
+                        </Button>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
