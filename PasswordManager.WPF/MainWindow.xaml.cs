@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using Newtonsoft.Json.Linq;
 using PasswordManager.Core;
 using static PasswordManager.Data.DataManager.JsonManager;
 
@@ -15,72 +16,89 @@ public class RelayCommand : ICommand
 }
 public class ItemViewModel : INotifyPropertyChanged
 {
-    private string _id;
-    private string _addres;
-    private string _login;
+    private PasswordEntry _passwordEntry;
+    private string _url;
     private string _loginText;
-    private string _password;
     private string _passwordText;
-    private string _category;
-    public string Id
+    public string Url
     {
-        get => _id;
-        set => _id = value;
-    }
-    public string Addres
-    {
-        get => _addres;
-        set => _addres = value;
-    }
-    public string Login
-    {
-        get => _login;
-        set { _login = value; OnPropertyChanged(nameof(Login)); }
+        get => _url;
+        set => _url = value;
     }
     public string LoginText
     {
         get => _loginText;
-        set => _loginText = new string('*', value.Length);
-    }
-    public string Password
-    {
-        get => _password;
-        set { _password = value; OnPropertyChanged(nameof(Password)); }
+        set
+        { 
+            _loginText = value;
+            OnPropertyChanged(nameof(LoginText));
+        } 
     }
     public string PasswordText
     {
         get => _passwordText;
-        set => _passwordText = new string('*', value.Length);
-    }
-    public string Category
-    {
-        get => _category;
-        set => _category = value;
-    }
-    public ICommand ChangeCommand { get; }
-    public ICommand DeleteCommand { get; }
-
-    public void ChangeVisibility ()
-    {
-        if (LoginText.StartsWith("*"))
+        set
         {
-            LoginText = Login;
-            PasswordText = Password;
+            _passwordText = value;
+            OnPropertyChanged(nameof(PasswordText));
         }
     }
+
+    private RelayCommand changeVisibilityCommand;
+    public RelayCommand ChangeVisibilityCommand
+    {
+        get
+        {
+            return changeVisibilityCommand ?? (changeVisibilityCommand = new RelayCommand(() =>
+            {
+                if (LoginText.StartsWith("*"))
+                {
+                    LoginText = _passwordEntry.Login;
+                    PasswordText = _passwordEntry.Password;
+                }
+                else
+                {
+                    LoginText = new string('*', _passwordEntry.Login.Length);
+                    PasswordText = new string('*', _passwordEntry.Password.Length);
+                }
+            }));
+        }
+    }
+
+
+    private RelayCommand changeDataCommand;
+    public RelayCommand ChangeDataCommand
+    {
+        get
+        {
+            return changeDataCommand ?? (changeDataCommand = new RelayCommand(() =>
+            {
+
+            }));
+        }
+    }
+
+    private RelayCommand deleteDataCommand;
+    public RelayCommand DeleteDataCommand
+    {
+        get
+        {
+            return deleteDataCommand ?? (deleteDataCommand = new RelayCommand(() => { }));
+        }
+    }
+
     public ItemViewModel(PasswordEntry item)
     {
-        Id = item.ID;
-        Addres = item.Url;
-        Login = item.Login;
-        LoginText = "";
-        Password = item.Password;
-        PasswordText = "";
-        Category = item.Category;
+        _passwordEntry = item;
+        Url = item.Url;
+        PasswordText = new string('*', _passwordEntry.Password.Length);
+        LoginText = new string('*', _passwordEntry.Login.Length);
+
     }
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
+
 namespace PasswordManager.WPF
 {
     public partial class MainWindow : Window
@@ -96,8 +114,14 @@ namespace PasswordManager.WPF
                 Items.Add(new ItemViewModel(item));
             }
         }
-        private void Add(object sender, RoutedEventArgs e) { }
-        private void ChangeItem() { }
-        private void DeleteItem(string str){ }
+        public void AddData(object sender, RoutedEventArgs e)
+        {
+            Window changeDataWindow = new ChangeDataWindow();
+            if (changeDataWindow.ShowDialog() == true)
+            {
+
+            }
+            
+        }
     }
 }
