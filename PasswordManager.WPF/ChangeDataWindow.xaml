@@ -16,6 +16,6 @@
         <Label Content="Пароль" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" Height="25" Width="60" RenderTransformOrigin="0.482,-0.345"/>
         <TextBox x:Name="Password" Margin="105,80,105,177"  />
 
-        <Button Content="Создать" HorizontalAlignment="Center" Margin="0,210,0,0" VerticalAlignment="Top" Width="128" Height="50" Click="Button_Click"/>
+        <Button Content="Создать" HorizontalAlignment="Center" Margin="0,210,0,0" VerticalAlignment="Top" Width="128" Height="50" Click="ButtonOkClick"/>
     </Grid>
 </Window>
