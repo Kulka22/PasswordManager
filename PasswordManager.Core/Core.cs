@@ -7,11 +7,11 @@ namespace PasswordManager.Core
     public class MainProcess
     {
         private string _masterPassword;
-        private readonly string _filePath;
         private List<PasswordEntry> _passwords;
         private static bool _isStartAllowed = false;
+        public readonly string _filePath;
 
-        public MainProcess(string inputPassword, string filePath)
+        public MainProcess(string inputPassword, string filePath = "psw.json")
         {
             if (!_isStartAllowed && File.Exists(filePath))
                 throw new Exception("YOU DONT HAVE ACCESS!!!!!!!!");
@@ -21,9 +21,9 @@ namespace PasswordManager.Core
         }
 
         // Проверяем, есть ли файл и нужна ли регистрация
-        public bool GetRegStatus()
+        public static bool GetRegStatus(string filePath)
         {
-            return File.Exists(_filePath);
+            return File.Exists(filePath);
         }
 
         // Метод для предупреждения о совпадающих паролях (Опциональный)
