@@ -9,10 +9,12 @@ namespace PasswordManager.Core
         private string _masterPassword;
         private readonly string _filePath;
         private List<PasswordEntry> _passwords;
-        private bool _isStartAllowed = false;
+        private static bool _isStartAllowed = false;
 
         public MainProcess(string inputPassword, string filePath)
         {
+            if (!_isStartAllowed && File.Exists(filePath))
+                throw new Exception("YOU DONT HAVE ACCESS!!!!!!!!");
             _filePath = filePath;
             _masterPassword = inputPassword;
             _passwords = LoadData(_masterPassword, _filePath);
@@ -22,6 +24,34 @@ namespace PasswordManager.Core
         public bool GetRegStatus()
         {
             return File.Exists(_filePath);
+        }
+
+        // Метод для предупреждения о совпадающих паролях (Опциональный)
+        // P.s. логины могут быть разные, речь ТОЛЬКО о паролях
+        public bool CheckUniqueness(PasswordEntry inputPassword)
+        {
+            foreach (PasswordEntry password in _passwords)
+                if (password.Password == inputPassword.Password)
+                    return false;
+            return true;
+        }
+
+        // А это уже метод для поиска совпадений у (login + site address)
+        // Возвращает кортеж (nullable)
+        // Если второй возвращаемый параметр true, то совпадение - ПОЛНОЕ
+        public (PasswordEntry, bool)? FindRepetition(PasswordEntry inputPassword)
+        {
+            foreach (PasswordEntry password in _passwords)
+            {
+                if (password.Service == inputPassword.Service &&
+                    password.Url == inputPassword.Url && password.Login == password.Login)
+                {
+                    if (password.Password == inputPassword.Password)
+                        return (password, true);
+                    return (password, false);
+                }
+            }
+            return null;
         }
 
         public void AddPassword(PasswordEntry password)
@@ -65,8 +95,12 @@ namespace PasswordManager.Core
 
             Buffer.BlockCopy(fileBytes, 0, salt, 0, SaltSize);
             Buffer.BlockCopy(fileBytes, salt.Length, storedMasterHash, 0, HashSize);
-            
-            return KeyManager.ComparePasswords(inputPassword, storedMasterHash, salt);
+
+            bool result = KeyManager.ComparePasswords(inputPassword, storedMasterHash, salt);
+            if (result)
+                _isStartAllowed = true;
+
+            return result;
         }
     }
 }
