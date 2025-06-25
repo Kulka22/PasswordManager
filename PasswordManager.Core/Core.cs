@@ -7,13 +7,21 @@ namespace PasswordManager.Core
     public class MainProcess
     {
         private string _masterPassword;
-        private readonly string _filePath = "psw.json";
+        private readonly string _filePath;
         private List<PasswordEntry> _passwords;
+        private bool _isStartAllowed = false;
 
-        public MainProcess(string masterPassword)
+        public MainProcess(string inputPassword, string filePath)
         {
-            _masterPassword = masterPassword;
-            _passwords = LoadData(masterPassword, _filePath);
+            _filePath = filePath;
+            _masterPassword = inputPassword;
+            _passwords = LoadData(_masterPassword, _filePath);
+        }
+
+        // Проверяем, есть ли файл и нужна ли регистрация
+        public bool GetRegStatus()
+        {
+            return File.Exists(_filePath);
         }
 
         public void AddPassword(PasswordEntry password)
@@ -44,6 +52,21 @@ namespace PasswordManager.Core
         public void SavePasswords()
         {
             SaveData(_passwords, _masterPassword, _filePath);
+        }
+        
+        public static bool CheckMasterPassword(string inputPassword, string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new Exception("Это первый запуск, проверять пароль не надо!");
+
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            byte[] salt = new byte[SaltSize];
+            byte[] storedMasterHash = new byte[HashSize];
+
+            Buffer.BlockCopy(fileBytes, 0, salt, 0, SaltSize);
+            Buffer.BlockCopy(fileBytes, salt.Length, storedMasterHash, 0, HashSize);
+            
+            return KeyManager.ComparePasswords(inputPassword, storedMasterHash, salt);
         }
     }
 }

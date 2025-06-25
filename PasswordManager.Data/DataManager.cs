@@ -25,6 +25,9 @@ namespace PasswordManager.Data
         public class JsonManager
         {
             private const string _filePath = "psw.json";
+            // Размеры соли и хэша (зависит от используемых алгоритмов)
+            public const int SaltSize = 16; // 128-битная соль
+            public const int HashSize = 32; // SHA256 = 256 бит = 32 байта
 
             public class PasswordEntry
             {
@@ -89,12 +92,8 @@ namespace PasswordManager.Data
 
                 byte[] fileBytes = File.ReadAllBytes(filePath);
 
-                // Размеры соли и хэша (зависит от используемых алгоритмов)
-                const int SaltSize = 16; // 128-битная соль
-                const int HashSize = 32; // SHA256 = 256 бит = 32 байта
-
                 if (fileBytes.Length < SaltSize + HashSize)
-                    throw new InvalidDataException("File is corrupted or too small.");
+                    throw new InvalidDataException("Файл поврежден!");
 
                 byte[] salt = new byte[SaltSize];
                 byte[] storedMasterHash = new byte[HashSize];
@@ -107,7 +106,7 @@ namespace PasswordManager.Data
                 // Проверка мастер-пароля
                 byte[] inputMasterHash = SHA256.HashData(Encoding.UTF8.GetBytes(masterPassword));
                 if (!CryptographicOperations.FixedTimeEquals(inputMasterHash, storedMasterHash))
-                    throw new UnauthorizedAccessException("Incorrect master password.");
+                    throw new UnauthorizedAccessException("Неверный мастер пароль!");
 
                 byte[] key = MakeKey(masterPassword, salt);
 

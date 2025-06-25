@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PasswordManager.Core;
 using PasswordManager.Crypto;
 using PasswordManager.Data;
 using static PasswordManager.Data.DataManager.JsonManager;
@@ -9,7 +10,10 @@ namespace PasswordManager.ConsoleInterface
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            MainProcess main = new MainProcess("qwerty78", "console.json");
+            main.SavePasswords();
+            bool result = MainProcess.CheckMasterPassword("qwerty78", "console.json");
+            Console.WriteLine(result);
         }
     }
 }

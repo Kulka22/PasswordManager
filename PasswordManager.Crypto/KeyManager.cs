@@ -23,11 +23,12 @@ namespace PasswordManager.Crypto
 
         public static bool ComparePasswords(string inputPassword, byte[] storedHash, byte[] salt)
         {
-            byte[] saltedPassword = new byte[Encoding.UTF8.GetByteCount(inputPassword) + salt.Length];
-            Encoding.UTF8.GetBytes(inputPassword).CopyTo(saltedPassword, 0);
-            salt.CopyTo(saltedPassword, Encoding.UTF8.GetByteCount(inputPassword));
+            //byte[] saltedPassword = new byte[Encoding.UTF8.GetByteCount(inputPassword) + salt.Length];
+            //Encoding.UTF8.GetBytes(inputPassword).CopyTo(saltedPassword, 0);
+            //salt.CopyTo(saltedPassword, Encoding.UTF8.GetByteCount(inputPassword));
+            //byte[] inputHash = SHA256.HashData(saltedPassword);
 
-            byte[] inputHash = SHA256.HashData(saltedPassword);
+            byte[] inputHash = SHA256.HashData(Encoding.UTF8.GetBytes(inputPassword));
             return CryptographicOperations.FixedTimeEquals(inputHash, storedHash);
         }
 

@@ -28,7 +28,7 @@ namespace PasswordManager.Tests
         [Fact]
         public void Test4()
         {
-            MainProcess main = new MainProcess("qwerty");
+            MainProcess main = new MainProcess("qwerty", "psw.json");
             PasswordEntry password1 = new PasswordEntry()
             {
                 Service = "VK",
@@ -49,7 +49,7 @@ namespace PasswordManager.Tests
             main.AddPassword(password2);
             main.SavePasswords();
 
-            main = new MainProcess("qwerty");
+            main = new MainProcess("qwerty", "psw.json");
             List<PasswordEntry> gettedPsws = main.GetPasswords();
             PasswordEntry psw1 = gettedPsws[0];
             PasswordEntry psw2 = gettedPsws[1];
@@ -62,7 +62,7 @@ namespace PasswordManager.Tests
         [Fact]
         public void Test5()
         {
-            MainProcess main = new MainProcess("qwerty");
+            MainProcess main = new MainProcess("qwerty", "psw.json");
             List<PasswordEntry> passwords = main.GetPasswords();
             PasswordEntry original = passwords[0];
             PasswordEntry password = new PasswordEntry()
@@ -77,7 +77,7 @@ namespace PasswordManager.Tests
             main.ChangePassword(password.ID, password);
             main.SavePasswords();
 
-            main = new MainProcess("qwerty");
+            main = new MainProcess("qwerty", "psw.json");
             List<PasswordEntry> gettedPsws = main.GetPasswords();
             //string expected = "2 VK newLogin 12345";
             string expected = $"{passwords.Count} {original.Service} NEWLOGIN {original.Password}";
@@ -85,6 +85,18 @@ namespace PasswordManager.Tests
                 $"{gettedPsws[0].Password}";
 
             Assert.Equal(expected, result);
+        }
+
+        // Тест для метода проверки корректности введенного пароля
+        [Fact]
+        public void Test6()
+        {
+            MainProcess main = new MainProcess("qwerty78", "test6.json");
+            main.SavePasswords();
+
+            bool result = MainProcess.CheckMasterPassword("qwerty78", "test6.json");
+
+            Assert.True(result);
         }
     }
 }
