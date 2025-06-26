@@ -18,6 +18,7 @@ namespace PasswordManager.Core
             _filePath = filePath;
             _masterPassword = inputPassword;
             _passwords = LoadData(_masterPassword, _filePath);
+            _isStartAllowed = true;
         }
 
         // Проверяем, есть ли файл и нужна ли регистрация
@@ -101,6 +102,26 @@ namespace PasswordManager.Core
                 _isStartAllowed = true;
 
             return result;
+        }
+
+        // Метод для "скрытного" ввода пароля, ТОЛЬКО для консоли!!
+        public static string ReadPasswordConsole()
+        {
+            string password = "";
+            ConsoleKeyInfo key;
+            do
+            {
+                key = Console.ReadKey(intercept: true);
+
+                if (key.Key != ConsoleKey.Enter)
+                {
+                    password += key.KeyChar;
+                    Console.Write("*");
+                }
+            }
+            while (key.Key != ConsoleKey.Enter);
+            Console.WriteLine();
+            return password;
         }
     }
 }
