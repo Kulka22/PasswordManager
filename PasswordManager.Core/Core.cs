@@ -88,7 +88,7 @@ namespace PasswordManager.Core
         public static bool CheckMasterPassword(string inputPassword, string filePath)
         {
             if (!File.Exists(filePath))
-                throw new Exception("Это первый запуск, проверять пароль не надо!");
+                throw new Exception("File not found!");
 
             byte[] fileBytes = File.ReadAllBytes(filePath);
             byte[] salt = new byte[SaltSize];

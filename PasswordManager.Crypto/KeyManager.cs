@@ -9,16 +9,14 @@ namespace PasswordManager.Crypto
 {
     public class KeyManager
     {
-        // Размер блока AES (128 бит)
-        private const int AesBlockSize = 128;
+        //private const int AesBlockSize = 128;
         // Количество итераций для PBKDF2
         private const int Iterations = 100000;
 
         public static byte[] MakeKey(string password, byte[] salt)
         {
-            // Используем PBKDF2 для более безопасного ключа
             using var deriveBytes = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256);
-            return deriveBytes.GetBytes(32); // 256-битный ключ для AES
+            return deriveBytes.GetBytes(32);
         }
 
         public static bool ComparePasswords(string inputPassword, byte[] storedHash, byte[] salt)
@@ -29,7 +27,7 @@ namespace PasswordManager.Crypto
 
         public static byte[] GenerateSalt()
         {
-            byte[] salt = new byte[16]; // 128-битная соль
+            byte[] salt = new byte[16];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(salt);
             return salt;

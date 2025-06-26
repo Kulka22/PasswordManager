@@ -93,7 +93,7 @@ namespace PasswordManager.Data
                 byte[] fileBytes = File.ReadAllBytes(filePath);
 
                 if (fileBytes.Length < SaltSize + HashSize)
-                    throw new InvalidDataException("Файл поврежден!");
+                    throw new InvalidDataException("File is corrupted!");
 
                 byte[] salt = new byte[SaltSize];
                 byte[] storedMasterHash = new byte[HashSize];
@@ -106,7 +106,7 @@ namespace PasswordManager.Data
                 // Проверка мастер-пароля
                 byte[] inputMasterHash = SHA256.HashData(Encoding.UTF8.GetBytes(masterPassword));
                 if (!CryptographicOperations.FixedTimeEquals(inputMasterHash, storedMasterHash))
-                    throw new UnauthorizedAccessException("Неверный мастер пароль!");
+                    throw new UnauthorizedAccessException("Incorrect master password!");
 
                 byte[] key = MakeKey(masterPassword, salt);
 
