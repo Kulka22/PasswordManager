@@ -16,17 +16,32 @@ namespace PasswordManager.WPF
 {
     public partial class ChangeDataWindow : Window
     {
-        public string NewLogin { get; private set; }
-        public string NewPassword { get; private set; }
+        private string _url;
+        private string _newLogin;
+        private string _newPassword;
+        public string URL
+        {
+            get => _url;
+            set => _url = value;
+        }
+        public string NewLogin 
+        { 
+            get => _newLogin;
+            set => _newLogin = value;
+        }
+        public string NewPassword
+        {
+            get => _newPassword;
+            set => _newPassword = value; 
+        }
         public ChangeDataWindow()
         {
             InitializeComponent();
-
+            DataContext = this;
         }
 
         private void ButtonOkClick(object sender, RoutedEventArgs e)
         {
-            NewPassword = Password.Text;
             DialogResult = true;
             Close();
         }
