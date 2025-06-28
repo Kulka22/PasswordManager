@@ -61,22 +61,47 @@ namespace PasswordManager.Core
             _passwords.Add(password);
         }
 
-        public void ChangePassword(string ID, PasswordEntry changedPassword)
+        public void RemovePassword(PasswordEntry passwordToDel)
         {
             for (int i = 0; i < _passwords.Count; i++)
             {
-                if (_passwords[i].ID == ID)
+                if (_passwords[i].ID == passwordToDel.ID)
+                {
+                    _passwords.RemoveAt(i);
+                    return;
+                }
+            }
+            throw new Exception("ID not found");
+        }
+
+        public void ChangePassword(PasswordEntry changedPassword)
+        {
+            for (int i = 0; i < _passwords.Count; i++)
+            {
+                if (_passwords[i].ID == changedPassword.ID)
                 {
                     _passwords[i] = changedPassword;
                     return;
                 }
             }
-
             throw new Exception("ID not found");
         }
 
         public List<PasswordEntry> GetPasswords()
         {
+            List<PasswordEntry> passwords = new List<PasswordEntry>();
+            foreach (PasswordEntry password in _passwords)
+            {
+                passwords.Add(new PasswordEntry()
+                {
+                    ID = password.ID,
+                    Service = password.Service,
+                    Url = password.Url,
+                    Login = password.Login,
+                    Password = password.Password,
+                    Category = password.Category
+                });
+            }
             return _passwords;
         }
 
@@ -84,7 +109,7 @@ namespace PasswordManager.Core
         {
             SaveData(_passwords, _masterPassword, _filePath);
         }
-        
+
         public static bool CheckMasterPassword(string inputPassword, string filePath)
         {
             if (!File.Exists(filePath))
