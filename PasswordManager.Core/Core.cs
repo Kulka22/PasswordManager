@@ -137,8 +137,12 @@ namespace PasswordManager.Core
             do
             {
                 key = Console.ReadKey(intercept: true);
-
-                if (key.Key != ConsoleKey.Enter)
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    password = password.Remove(password.Length - 1);
+                    Console.Write("\b \b");
+                }
+                else if (key.Key != ConsoleKey.Enter)
                 {
                     password += key.KeyChar;
                     Console.Write("*");
