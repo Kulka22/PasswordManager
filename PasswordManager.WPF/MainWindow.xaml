@@ -9,7 +9,7 @@
     <Grid>
         <Button Content="Добавить запись" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="40" Width="110" Click="AddData"/>
         
-        <ListBox ItemsSource="{Binding Items }" BorderThickness="0" Margin="0,60,0,0">
+        <ListBox x:Name="PassList" ItemsSource="{Binding Items }" BorderThickness="0" Margin="0,60,0,0">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
