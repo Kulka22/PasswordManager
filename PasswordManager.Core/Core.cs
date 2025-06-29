@@ -150,6 +150,28 @@ namespace PasswordManager.Core
             return result.ToString();
         }
 
+        public Dictionary<string, List<PasswordEntry>> FilterCategories(List<string> categories)
+        {
+            Dictionary<string, List<PasswordEntry>> result =
+                new Dictionary<string, List<PasswordEntry>>();
+            List<PasswordEntry> passwords = GetPasswords();
+
+            foreach (string category in categories)
+            {
+                result[category] = new List<PasswordEntry>();
+                foreach (PasswordEntry password in passwords)
+                {
+                    if (category == password.Category)
+                    {
+                        result[category].Add(password);
+                        passwords.Remove(password);
+                    }
+                }    
+            }
+
+            return result;
+        }
+
         // Метод для "скрытного" ввода пароля, ТОЛЬКО для консоли!!
         public static string ReadPasswordConsole()
         {
