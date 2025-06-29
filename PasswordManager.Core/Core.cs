@@ -1,6 +1,7 @@
 ﻿using PasswordManager.Data;
 using PasswordManager.Crypto;
 using static PasswordManager.Data.DataManager.JsonManager;
+using System.Text;
 
 namespace PasswordManager.Core
 {
@@ -127,6 +128,26 @@ namespace PasswordManager.Core
                 _isStartAllowed = true;
 
             return result;
+        }
+
+        public string GeneratePassword(int length, List<char> forbiddenSymbols = null)
+        {
+            StringBuilder result = new StringBuilder();
+            Random rnd = new Random();
+            char rndChar;
+
+            for (int i = 0; i < length; i++)
+            {
+                rndChar = (char)rnd.Next(33, 126);
+                if (forbiddenSymbols != null && forbiddenSymbols.Contains(rndChar))
+                {
+                    --i;
+                    continue;
+                }
+                result.Append(rndChar);
+            }
+
+            return result.ToString();
         }
 
         // Метод для "скрытного" ввода пароля, ТОЛЬКО для консоли!!
