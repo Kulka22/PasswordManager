@@ -130,7 +130,7 @@ namespace PasswordManager.Core
             return result;
         }
 
-        public string GeneratePassword(int length, List<char> forbiddenSymbols = null)
+        public static string GeneratePassword(int length, List<char> forbiddenSymbols = null)
         {
             StringBuilder result = new StringBuilder();
             Random rnd = new Random();

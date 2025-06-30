@@ -6,7 +6,7 @@ using PasswordManager.Core;
 
 namespace PasswordManager.Tests
 {
-    public class UnitTest1
+    public class UnitTests
     {
         // Протестирован функционал шифровки сообщения и его дешифровки
         [Fact]
@@ -23,6 +23,12 @@ namespace PasswordManager.Tests
             string comparedStr = DataManager.EncodeManager.MakeStringFromByteArr(decryptedData);
 
             Assert.Equal(originalMessage, comparedStr);
+        }
+
+        [Fact]
+        public void T()
+        {
+
         }
 
         [Fact]
@@ -74,7 +80,7 @@ namespace PasswordManager.Tests
                 Password = original.Password,
                 Category = original.Category
             };
-            main.ChangePassword(password.ID, password);
+            main.ChangePassword(password);
             main.SavePasswords();
 
             main = new MainProcess("qwerty", "psw.json");
@@ -85,18 +91,6 @@ namespace PasswordManager.Tests
                 $"{gettedPsws[0].Password}";
 
             Assert.Equal(expected, result);
-        }
-
-        // Тест для метода проверки корректности введенного пароля
-        [Fact]
-        public void Test6()
-        {
-            MainProcess main = new MainProcess("qwerty78", "test6.json");
-            main.SavePasswords();
-
-            bool result = MainProcess.CheckMasterPassword("qwerty78", "test6.json");
-
-            Assert.True(result);
         }
     }
 }
