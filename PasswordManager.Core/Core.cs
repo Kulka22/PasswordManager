@@ -130,7 +130,7 @@ namespace PasswordManager.Core
             return result;
         }
 
-        public string GeneratePassword(int length, List<char> forbiddenSymbols = null)
+        public static string GeneratePassword(int length, List<char> forbiddenSymbols = null)
         {
             StringBuilder result = new StringBuilder();
             Random rnd = new Random();
@@ -169,6 +169,17 @@ namespace PasswordManager.Core
                 }    
             }
 
+            return result;
+        }
+
+        public List<string> GetAllCategories()
+        {
+            List<string> result = new List<string>();
+            foreach (PasswordEntry password in _passwords)
+            {
+                if (!result.Contains(password.Category))
+                    result.Add(password.Category);
+            }
             return result;
         }
 
