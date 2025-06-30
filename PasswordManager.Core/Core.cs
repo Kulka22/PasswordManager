@@ -172,6 +172,17 @@ namespace PasswordManager.Core
             return result;
         }
 
+        public List<string> GetAllCategories()
+        {
+            List<string> result = new List<string>();
+            foreach (PasswordEntry password in _passwords)
+            {
+                if (!result.Contains(password.Category))
+                    result.Add(password.Category);
+            }
+            return result;
+        }
+
         // Метод для "скрытного" ввода пароля, ТОЛЬКО для консоли!!
         public static string ReadPasswordConsole()
         {
