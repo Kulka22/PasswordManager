@@ -14,18 +14,14 @@ using System.Windows.Shapes;
 
 namespace PasswordManager.WPF
 {
-    public partial class AddDataWindow : Window
+    /// <summary>
+    /// Логика взаимодействия для Window1.xaml
+    /// </summary>
+    public partial class MessageWindow : Window
     {
-
-        public AddDataWindow()
+        public MessageWindow()
         {
             InitializeComponent();
-        }
-
-        private void ButtonOkClick(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-            Close();
         }
     }
 }

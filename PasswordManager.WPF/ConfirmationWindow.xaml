@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Подтверждение" Height="130" Width="270">
     <Grid>
-        <Label Content="Вы уверены, что хотите удалить эту запись?&#xD;&#xA;Это действие необратимо." Height="50" Width="250" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+        <Label x:Name="TextLabel" Content="Вы уверены, что хотите удалить эту запись?&#xD;&#xA;Это действие необратимо." Height="50" Width="250" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
         <Button Content="Да" Height="30" Width="50" Margin="60,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="ButtonOkClick" />
         <Button Content="Нет" Height="30" Width="50" Margin="140,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="ButtonNegativeClick" />
     </Grid>

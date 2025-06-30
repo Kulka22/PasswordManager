@@ -5,17 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PasswordManager.WPF"
         mc:Ignorable="d"
-        Title="Изменить запись" Height="400" Width="600">
+        Title="Изменить запись" Height="300" Width="400">
     <Grid>
-        <Label Content="URL" Margin="10,20,0,0" VerticalAlignment="Top" Height="25" HorizontalAlignment="Left" Width="60"/>
-        <TextBox Text="{Binding URL, UpdateSourceTrigger=PropertyChanged}" Margin="155,20,155,0" Height="25" VerticalAlignment="Top"/>
+        <ListBox Margin="20,20,0,20" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Service" Height="25" Width="60" />
+                <TextBox x:Name="ServiceText" Height="25" Width="200" />
+            </StackPanel>
 
-        <Label Content="Логин" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Height="25" Width="60"/>
-        <TextBox Text="{Binding NewLogin, UpdateSourceTrigger=PropertyChanged}" Margin="155,71,155,0" Height="25" VerticalAlignment="Top"/>
+            <StackPanel Orientation="Horizontal">
+                <!--Место для категорий-->
+            </StackPanel>
 
-        <Label Content="Пароль" HorizontalAlignment="Left" Margin="10,120,0,0" VerticalAlignment="Top" Height="25" Width="60" RenderTransformOrigin="0.482,-0.345"/>
-        <TextBox Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" Margin="155,120,155,0" Height="25" VerticalAlignment="Top"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="URL" Height="25" Width="60"/>
+                <TextBox x:Name="UrlText" Height="25" Width="200" />
+            </StackPanel>
 
-        <Button Content="Сохранить" HorizontalAlignment="Center" Margin="0,324,0,0" VerticalAlignment="Top" Width="128" Height="50"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Логин" Height="25" Width="60"/>
+                <TextBox x:Name="LoginText" Height="25" Width="200" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Пароль" Height="25" Width="60" />
+                <TextBox x:Name="PasswordText" Height="25" Width="200" />
+            </StackPanel>
+        </ListBox>
+
+
+
+
+
+        <Button Content="Сохранить" HorizontalAlignment="Center" Margin="0,180,0,0" VerticalAlignment="Top" Width="128" Height="50" Click="ButtonOkClick"/>
     </Grid>
 </Window>

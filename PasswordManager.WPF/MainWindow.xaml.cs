@@ -25,9 +25,15 @@ namespace PasswordManager.WPF
         public class ItemViewModel : INotifyPropertyChanged
         {
             public PasswordEntry _passwordEntry;
+            private string _servise;
             private string _url;
             private string _loginText;
             private string _passwordText;
+            public string Service
+            {
+                get => _servise;
+                set => _servise = value;
+            }
             public string Url
             {
                 get => _url;
@@ -59,6 +65,7 @@ namespace PasswordManager.WPF
             public ItemViewModel(PasswordEntry item, Action<PasswordEntry> changeDataCommand, Action<ItemViewModel> deleteDataCommand)
             {
                 _passwordEntry = item;
+                Service = item.Service;
                 Url = item.Url;
                 PasswordText = new string('*', _passwordEntry.Password.Length);
                 LoginText = new string('*', _passwordEntry.Login.Length);
@@ -102,24 +109,18 @@ namespace PasswordManager.WPF
                 }
                 else
                 {
-                    Close();
+                    Environment.Exit(1);
                 }
             }
             else
             {
                 SignInWindow signInWindow = new SignInWindow();
-                if (signInWindow.ShowDialog() == true)
+                bool? result = signInWindow.ShowDialog();
+                if (result == true)
                 {
-                    while (!MainProcess.CheckMasterPassword(signInWindow.EntryPassword.Password, "psw.json"))
-                    {
-                        signInWindow.ErrorLabel.Visibility = 0;
-                        if (signInWindow.ShowDialog() != true)
-                        {
-                            Close();
-                        }
-                    }
                     Start(signInWindow.EntryPassword.Password);
                 }
+                else Environment.Exit(1);
             }
             DataContext = this;
         }
@@ -131,17 +132,51 @@ namespace PasswordManager.WPF
         }
         public void AddData(object sender, RoutedEventArgs e)
         {
-            ChangeDataWindow changeDataWindow = new ChangeDataWindow();
-            if (changeDataWindow.ShowDialog() == true)
+            AddDataWindow addDataWindow = new AddDataWindow();
+            if (addDataWindow.ShowDialog() == true)
             {
                 PasswordEntry newItem = new PasswordEntry();
-                newItem.Url = changeDataWindow.URL;
-                newItem.Login = changeDataWindow.NewLogin;
-                newItem.Password = changeDataWindow.NewPassword;
-                mainProcess.AddPassword(newItem);
-                mainProcess.SavePasswords();
+                newItem.Service = addDataWindow.ServiceText.Text;
+                newItem.Url = addDataWindow.UrlText.Text;
+                newItem.Login = addDataWindow.LoginText.Text;
+                newItem.Password = addDataWindow.PasswordText.Text;
 
-                UpdateItems();
+                var tuple = mainProcess.FindRepetition(newItem);
+                if (tuple != null)
+                {
+                    if (tuple.Value.Item2)
+                    {
+                        MessageWindow messageWindow = new MessageWindow();
+                        messageWindow.MessageLabel.Content = "Такая запись уже существует!";
+                        messageWindow.Show();
+                    }
+                    else
+                    {
+                        ConfirmationWindow confirmationWindow = new ConfirmationWindow();
+                        confirmationWindow.Width = 350;
+                        confirmationWindow.TextLabel.Content = "Существует запись с таким же Service и Login.\nИзменить пароль в уже существующей записи?";
+                        confirmationWindow.TextLabel.Width = 350;
+                        if (confirmationWindow.ShowDialog() == true)
+                        {
+                            tuple.Value.Item1.Password = newItem.Password;
+                            mainProcess.ChangePassword(tuple.Value.Item1);
+                            
+                        }
+                        else
+                        {
+                            mainProcess.AddPassword(newItem);
+                        }
+                        mainProcess.SavePasswords();
+                        UpdateItems();
+                    }
+                }
+                else
+                {
+                    mainProcess.AddPassword(newItem);
+                    mainProcess.SavePasswords();
+                    UpdateItems();
+                }
+                
             }
         }
         private void ChangeData(PasswordEntry item)

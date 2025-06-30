@@ -14,6 +14,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <!-- Текстовые поля -->
+                        <TextBox Text="{Binding Service}" Width="100" Margin="5" IsReadOnly="True" />
                         <TextBox Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5" IsReadOnly="True"/>
                         <TextBox Text="{Binding LoginText, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5" IsReadOnly="True"/>
                         <TextBox Text="{Binding PasswordText, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5" IsReadOnly="True"/>

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PasswordManager.Core;
 
 namespace PasswordManager.WPF
 {
@@ -26,8 +27,15 @@ namespace PasswordManager.WPF
 
         private void ButtonOkClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            Close();
+            if (MainProcess.CheckMasterPassword(EntryPassword.Password, "psw.json"))
+            {
+                DialogResult = true;
+                Close();
+            }
+            else
+            {
+                ErrorLabel.Visibility = 0;
+            }
         }
     }
 }
