@@ -15,7 +15,9 @@ namespace PasswordManager.Core
         public MainProcess(string inputPassword, string filePath = "psw.json")
         {
             if (!_isStartAllowed && File.Exists(filePath))
-                throw new Exception("YOU DONT HAVE ACCESS!!!!!!!!");
+                throw new Exception("YOU DONT HAVE ACCESS!");
+            if (inputPassword == null || inputPassword.Length == 0)
+                throw new Exception("MASTER-PASSWORD MUST BE SET!");
             _filePath = filePath;
             _masterPassword = inputPassword;
             _passwords = LoadData(_masterPassword, _filePath);

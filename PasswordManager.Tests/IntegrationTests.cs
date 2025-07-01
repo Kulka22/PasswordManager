@@ -1,9 +1,10 @@
-﻿using PasswordManager.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
+using PasswordManager.Crypto;
+using PasswordManager.Data;
+using static PasswordManager.Data.DataManager.JsonManager;
+using PasswordManager.Core;
 using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace PasswordManager.Tests
 {

@@ -4,6 +4,7 @@ using static PasswordManager.Crypto.KeyManager;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using PasswordManager.Crypto;
 
 namespace PasswordManager.Data
 {
@@ -86,9 +87,7 @@ namespace PasswordManager.Data
             public static List<PasswordEntry> LoadData(string masterPassword, string filePath)
             {
                 if (!File.Exists(filePath))
-                {
                     return new List<PasswordEntry>();
-                }
 
                 byte[] fileBytes = File.ReadAllBytes(filePath);
 
@@ -104,8 +103,7 @@ namespace PasswordManager.Data
                 Buffer.BlockCopy(fileBytes, SaltSize + HashSize, encryptedJson, 0, encryptedJson.Length);
 
                 // Проверка мастер-пароля
-                byte[] inputMasterHash = SHA256.HashData(Encoding.UTF8.GetBytes(masterPassword));
-                if (!CryptographicOperations.FixedTimeEquals(inputMasterHash, storedMasterHash))
+                if (!ComparePasswords(masterPassword, storedMasterHash))
                     throw new UnauthorizedAccessException("Incorrect master password!");
 
                 byte[] key = MakeKey(masterPassword, salt);

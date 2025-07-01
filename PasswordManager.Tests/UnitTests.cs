@@ -3,6 +3,8 @@ using PasswordManager.Crypto;
 using PasswordManager.Data;
 using static PasswordManager.Data.DataManager.JsonManager;
 using PasswordManager.Core;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace PasswordManager.Tests
 {
@@ -26,6 +28,17 @@ namespace PasswordManager.Tests
             Assert.Equal(originalMessage, comparedStr);
         }
 
+        // Модуль Crypto: KeyManager
+        // Протестирован функционал проверки соответствия хэшированного мастер-пароля
+        [Fact]
+        public void ComparePasswords_OrigPswAndHashedPsw_ReturnsTrue()
+        {
+            string originalPsw = "_so-me_@Pass_word!";
+            byte[] hashPsw = SHA256.HashData(Encoding.UTF8.GetBytes(originalPsw));
 
+            bool result = KeyManager.ComparePasswords(originalPsw, hashPsw);
+
+            Assert.True(result);
+        }
     }
 }
