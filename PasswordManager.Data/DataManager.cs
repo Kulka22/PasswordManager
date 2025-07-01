@@ -10,6 +10,35 @@ namespace PasswordManager.Data
 {
     public class DataManager
     {
+        public interface IFileManager
+        {
+            bool Exists(string path);
+            byte[] Read(string path);
+            void Write(string path, byte[] data);
+            void Move(string sourcePath, string destPath);
+            void Copy(string sourcePath, string destPath, bool overwrite);
+            void Delete(string path);
+            string GetTempFileName();
+        }
+
+        public class FileManager : IFileManager
+        {
+            public void Copy(string sourcePath, string destPath, bool overwrite)
+                => File.Copy(sourcePath, destPath, overwrite);
+
+            public void Delete(string path) => File.Delete(path);
+
+            public bool Exists(string path) => File.Exists(path);
+
+            public void Move(string sourcePath, string destPath) 
+                => File.Move(sourcePath, destPath);
+
+            public byte[] Read(string path) => File.ReadAllBytes(path);
+
+            public void Write(string path, byte[] data) => File.WriteAllBytes(path, data);
+            public string GetTempFileName() => Path.GetTempFileName();
+        }
+
         public class EncodeManager
         {
             public static byte[] MakeByteArr(string inputString)
@@ -41,14 +70,14 @@ namespace PasswordManager.Data
             }
 
             public static void SaveData(List<PasswordEntry> passwords,
-                string masterPassword, string filePath)
+                string masterPassword, string filePath, IFileManager fileManager)
             {
                 // Каждый раз при сохранении генерируем новую соль
                 byte[] salt = GenerateSalt();
                 byte[] masterHash = SHA256.HashData(Encoding.UTF8.GetBytes(masterPassword));
                 byte[] newKey = MakeKey(masterPassword, salt);
 
-                bool isFirstRun = !File.Exists(filePath);
+                bool isFirstRun = !fileManager.Exists(filePath);
 
                 string jsonStr = JsonConvert.SerializeObject(passwords);
                 byte[] jsonAsByteArr = EncodeManager.MakeByteArr(jsonStr);
@@ -64,19 +93,19 @@ namespace PasswordManager.Data
                     salt.Length + masterHash.Length, encryptedJson.Length);
 
                 // Безопасно сохраняем
-                string tempFile = Path.GetTempFileName();
+                string tempFile = fileManager.GetTempFileName();
                 try
                 {
-                    File.WriteAllBytes(tempFile, result);
+                    fileManager.Write(tempFile, result);
                     if (isFirstRun)
-                        File.Move(tempFile, filePath);
+                        fileManager.Move(tempFile, filePath);
                     else
-                        File.Copy(tempFile, filePath, overwrite: true);
+                        fileManager.Copy(tempFile, filePath, true);
                 }
                 finally
                 {
-                    if (File.Exists(tempFile))
-                        File.Delete(tempFile);
+                    if (fileManager.Exists(tempFile))
+                        fileManager.Delete(tempFile);
                 }
 
                 // Очистка следов в памяти
@@ -84,7 +113,8 @@ namespace PasswordManager.Data
                 CryptographicOperations.ZeroMemory(result);
             }
 
-            public static List<PasswordEntry> LoadData(string masterPassword, string filePath)
+            public static List<PasswordEntry> LoadData(string masterPassword, 
+                string filePath, IFileManager fileManager)
             {
                 if (!File.Exists(filePath))
                     return new List<PasswordEntry>();

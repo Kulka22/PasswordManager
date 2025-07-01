@@ -11,16 +11,24 @@ namespace PasswordManager.Core
         private List<PasswordEntry> _passwords;
         private static bool _isStartAllowed = false;
         public readonly string _filePath;
+        private readonly DataManager.IFileManager _fileManager;
 
-        public MainProcess(string inputPassword, string filePath = "psw.json")
+        
+
+        public MainProcess(string inputPassword, 
+            DataManager.IFileManager fileManager = null, string filePath = "psw.json")
         {
+            if (fileManager == null)
+                _fileManager = new DataManager.FileManager();
+            else
+                _fileManager = fileManager;
             if (!_isStartAllowed && File.Exists(filePath))
                 throw new Exception("YOU DONT HAVE ACCESS!");
             if (inputPassword == null || inputPassword.Length == 0)
                 throw new Exception("MASTER-PASSWORD MUST BE SET!");
             _filePath = filePath;
             _masterPassword = inputPassword;
-            _passwords = LoadData(_masterPassword, _filePath);
+            _passwords = LoadData(_masterPassword, _filePath, _fileManager);
             _isStartAllowed = true;
         }
 
@@ -110,7 +118,7 @@ namespace PasswordManager.Core
 
         public void SavePasswords()
         {
-            SaveData(_passwords, _masterPassword, _filePath);
+            SaveData(_passwords, _masterPassword, _filePath, _fileManager);
         }
 
         public static bool CheckMasterPassword(string inputPassword, string filePath)
