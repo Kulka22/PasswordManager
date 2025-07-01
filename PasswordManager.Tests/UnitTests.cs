@@ -65,7 +65,7 @@ namespace PasswordManager.Tests
         // Модуль Crypto: KeyManager
         // Протестирован функционал проверки соответствия хэшированного мастер-пароля
         [Fact]
-        public void ComparePasswords_OrigPswAndHashedOrigPsw_ReturnsTrue()
+        public void ComparePasswords_OriginalPswAndHashedOriginalPsw_ReturnsTrue()
         {
             string originalPsw = "_so-me_@Pass_word!";
             byte[] hashPsw = SHA256.HashData(Encoding.UTF8.GetBytes(originalPsw));
@@ -76,7 +76,7 @@ namespace PasswordManager.Tests
         }
 
         [Fact]
-        public void ComparePasswords_OrigPswAndHashedIncorrectPsw_ReturnsFalse()
+        public void ComparePasswords_OriginalPswAndHashedIncorrectPsw_ReturnsFalse()
         {
             string originalPsw = "_so-me_@Pass_word!";
             string incorrectPsw = "_so-me_@Pass_vord!";
@@ -87,6 +87,17 @@ namespace PasswordManager.Tests
             Assert.False(result);
         }
 
+        // Модуль DataManager: EncodeManager
+        // Протестирован функционал перевода строки в массив байт и обратно
+        [Fact]
+        public void EncodeManagerMethods_Message_ReturnsTheSameMessage()
+        {
+            string message = "some_message123";
+            
+            string result = DataManager.EncodeManager.MakeStringFromByteArr(
+                DataManager.EncodeManager.MakeByteArr(message));
 
+            Assert.Equal(message, result);
+        }
     }
 }
