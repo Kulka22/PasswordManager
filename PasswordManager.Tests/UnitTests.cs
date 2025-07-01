@@ -85,11 +85,11 @@ namespace PasswordManager.Tests
             string password = "qwerty";
             byte[] salt = KeyManager.GenerateSalt();
             byte[] key = KeyManager.MakeKey(password, salt);
-            byte[] messageAsByteArray = DataManager.EncodeManager.MakeByteArr(originalMessage);
+            byte[] messageAsByteArray = EncodeManager.MakeByteArr(originalMessage);
 
             byte[] encryptedData = CryptoManager.EncryptManager.EncryptData(messageAsByteArray, key);
             byte[] decryptedData = CryptoManager.DecryptManager.DecryptData(encryptedData, key);
-            string comparedStr = DataManager.EncodeManager.MakeStringFromByteArr(decryptedData);
+            string comparedStr = EncodeManager.MakeStringFromByteArr(decryptedData);
 
             Assert.Equal(originalMessage, comparedStr);
         }
@@ -101,7 +101,7 @@ namespace PasswordManager.Tests
             string password = "qwerty";
             byte[] salt = KeyManager.GenerateSalt();
             byte[] key = KeyManager.MakeKey(password, salt);
-            byte[] messageAsByteArray = DataManager.EncodeManager.MakeByteArr(originalMessage);
+            byte[] messageAsByteArray = EncodeManager.MakeByteArr(originalMessage);
             byte[] newSalt = KeyManager.GenerateSalt();
             byte[] newKey = KeyManager.MakeKey(password, newSalt);
 
@@ -118,7 +118,7 @@ namespace PasswordManager.Tests
             string password = "qwerty";
             byte[] salt = KeyManager.GenerateSalt();
             byte[] key = KeyManager.MakeKey(password, salt);
-            byte[] messageAsByteArray = DataManager.EncodeManager.MakeByteArr(originalMessage);
+            byte[] messageAsByteArray = EncodeManager.MakeByteArr(originalMessage);
             string incorrectPsw = "qvertu";
             byte[] newKey = KeyManager.MakeKey(incorrectPsw, salt);
 
@@ -160,8 +160,8 @@ namespace PasswordManager.Tests
         {
             string message = "some_message123";
 
-            string result = DataManager.EncodeManager.MakeStringFromByteArr(
-                DataManager.EncodeManager.MakeByteArr(message));
+            string result = EncodeManager.MakeStringFromByteArr(
+                EncodeManager.MakeByteArr(message));
 
             Assert.Equal(message, result);
         }
@@ -173,8 +173,44 @@ namespace PasswordManager.Tests
         public void FindRepetition_NewEntry_ReturnsTupleOfEntryAndTrue()
         {
             FileManagerTests fileManager = new FileManagerTests();
-            MainProcess mainProcess = new MainProcess("qwerty", fileManager);
-            List<PasswordEntry> passwords = TestData.testData;
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            PasswordEntry newEntry = new PasswordEntry()
+            {
+                ID = "5",
+                Service = "service_2",
+                Url = "service2.com",
+                Login = "login2",
+                Password = "psw2",
+                Category = "cat1"
+            };
+            
+            var result = mainProcess.FindRepetition(newEntry);
+
+            Assert.Equal(mainProcess.GetPasswords()[1], result.Value.Item1);
+            Assert.True(result.Value.Item2);
+        }
+
+        [Fact]
+        public void FindRepetition_NewEntry_ReturnsTupleOfEntryAndFalse()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            PasswordEntry newEntry = new PasswordEntry()
+            {
+                ID = "5",
+                Service = "service_2",
+                Url = "service2.com",
+                Login = "login2",
+                Password = "newPsw2",
+                Category = "cat1"
+            };
+
+            var result = mainProcess.FindRepetition(newEntry);
+
+            Assert.Equal(mainProcess.GetPasswords()[1], result.Value.Item1);
+            Assert.False(result.Value.Item2);
         }
     }
 }

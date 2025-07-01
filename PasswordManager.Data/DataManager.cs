@@ -113,6 +113,19 @@ namespace PasswordManager.Data
                 public string Category { get; set; }
                 public string Login { get; set; }
                 public string Password { get; set; }
+
+                public override bool Equals(object? obj)
+                {
+                    if (obj is not PasswordEntry other)
+                        return false;
+
+                    return ID == other.ID &&
+                           Service == other.Service &&
+                           Url == other.Url &&
+                           Category == other.Category &&
+                           Login == other.Login &&
+                           Password == other.Password;
+                }
             }
 
             public static void SaveData(List<PasswordEntry> passwords,

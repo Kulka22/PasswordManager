@@ -20,7 +20,7 @@ namespace PasswordManager.Core
                 _fileManager = new DataManager.FileManager();
             else
                 _fileManager = fileManager;
-            if (!_isStartAllowed && File.Exists(filePath))
+            if (!_isStartAllowed && _fileManager.Exists(filePath))
                 throw new Exception("YOU DONT HAVE ACCESS!");
             if (inputPassword == null || inputPassword.Length == 0)
                 throw new Exception("MASTER-PASSWORD MUST BE SET!");
@@ -54,7 +54,8 @@ namespace PasswordManager.Core
         // Если второй возвращаемый параметр true, то совпадение - ПОЛНОЕ
         public (PasswordEntry, bool)? FindRepetition(PasswordEntry inputPassword)
         {
-            foreach (PasswordEntry password in _passwords)
+            List<PasswordEntry> passwords = GetPasswords();
+            foreach (PasswordEntry password in passwords)
             {
                 if ((password.Service == inputPassword.Service ||
                     password.Url == inputPassword.Url) && password.Login == password.Login)
