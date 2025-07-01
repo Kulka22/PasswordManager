@@ -39,6 +39,52 @@ namespace PasswordManager.Data
             public string GetTempFileName() => Path.GetTempFileName();
         }
 
+        public class FileManagerTests : IFileManager
+        {
+            private readonly Dictionary<string, byte[]> _files = new();
+            private int _tempFileCounter = 0;
+
+            public void Copy(string sourcePath, string destPath, bool overwrite)
+            {
+                if (!_files.ContainsKey(sourcePath))
+                    throw new FileNotFoundException($"Source file not found: {sourcePath}");
+                if (_files.ContainsKey(destPath) && !overwrite)
+                    throw new IOException($"Destination file already exists: {destPath}");
+                _files[destPath] = (byte[])_files[sourcePath].Clone();
+            }
+
+            public void Delete(string path) => _files.Remove(path);
+
+            public bool Exists(string path) => _files.ContainsKey(path);
+
+            public string GetTempFileName()
+            {
+                string tempFileName = $"temp_{_tempFileCounter++}.tmp";
+                _files[tempFileName] = Array.Empty<byte>();
+                return tempFileName;
+            }
+
+            public void Move(string sourcePath, string destPath)
+            {
+                if (!_files.ContainsKey(sourcePath))
+                    throw new FileNotFoundException($"Source file not found: {sourcePath}");
+                if (_files.ContainsKey(destPath))
+                    throw new IOException($"Destination file already exists: {destPath}");
+                _files[destPath] = _files[sourcePath];
+                _files.Remove(sourcePath);
+            }
+
+            public byte[] Read(string path)
+            {
+                if (!_files.ContainsKey(path))
+                    throw new FileNotFoundException($"File not found: {path}");
+                return (byte[])_files[path].Clone();
+            }
+
+            public void Write(string path, byte[] data) => _files[path] = data;
+        }
+
+
         public class EncodeManager
         {
             public static byte[] MakeByteArr(string inputString)
@@ -128,6 +174,7 @@ namespace PasswordManager.Data
                 byte[] storedMasterHash = new byte[HashSize];
                 byte[] encryptedJson = new byte[fileBytes.Length - SaltSize - HashSize];
 
+                // Копирование соли, хэша мастер-пароля и остальных данных из файла
                 Buffer.BlockCopy(fileBytes, 0, salt, 0, SaltSize);
                 Buffer.BlockCopy(fileBytes, SaltSize, storedMasterHash, 0, HashSize);
                 Buffer.BlockCopy(fileBytes, SaltSize + HashSize, encryptedJson, 0, encryptedJson.Length);

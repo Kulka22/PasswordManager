@@ -16,7 +16,7 @@ namespace PasswordManager.Tests
         {
             string tempFile = "CheckPasswordTest.json";
             string password = MainProcess.GeneratePassword(16);
-            MainProcess main = new MainProcess(password, tempFile);
+            MainProcess main = new MainProcess(password, null, tempFile);
 
             main.SavePasswords();
             bool result = MainProcess.CheckMasterPassword(password, tempFile);
