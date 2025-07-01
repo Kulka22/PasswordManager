@@ -172,11 +172,12 @@ namespace PasswordManager.Core
 
             foreach (string category in categories)
             {
-                result[category] = new List<PasswordEntry>();
                 foreach (PasswordEntry password in passwords)
                 {
                     if (category == password.Category)
                     {
+                        if (!result.ContainsKey(category))
+                            result[category] = new List<PasswordEntry>();
                         result[category].Add(password);
                         passwords.Remove(password);
                     }
