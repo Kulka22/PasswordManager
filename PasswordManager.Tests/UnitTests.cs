@@ -212,5 +212,30 @@ namespace PasswordManager.Tests
             Assert.Equal(mainProcess.GetPasswords()[1], result.Value.Item1);
             Assert.False(result.Value.Item2);
         }
+
+        [Fact]
+        public void AddPassword_NewPassword_ReturnsListWithNewPassword()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            int expectedCount = passwords.Count + 1;
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            PasswordEntry newEntry = new PasswordEntry()
+            {
+                ID = "5",
+                Service = "service_5",
+                Url = "service5.su",
+                Login = "login5",
+                Password = "psw5",
+                Category = "cat2"
+            };
+
+            mainProcess.AddPassword(newEntry);
+            List<PasswordEntry> resultList = mainProcess.GetPasswords();
+            PasswordEntry resultEntry = resultList.Last();
+
+            Assert.Equal(newEntry, resultEntry);
+            Assert.Equal(expectedCount, resultList.Count);
+        }
     }
 }

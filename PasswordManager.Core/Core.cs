@@ -70,6 +70,10 @@ namespace PasswordManager.Core
 
         public void AddPassword(PasswordEntry password)
         {
+            if (password.Password.Length == 0 || password.Password == null
+                || ((password.Service == null || password.Service.Length == 0) &&
+                (password.Url == null || password.Url.Length == 0)))
+                throw new Exception("Required field are not filled in!");
             password.ID = Guid.NewGuid().ToString();
             _passwords.Add(password);
         }
