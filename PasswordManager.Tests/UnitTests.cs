@@ -237,5 +237,71 @@ namespace PasswordManager.Tests
             Assert.Equal(newEntry, resultEntry);
             Assert.Equal(expectedCount, resultList.Count);
         }
+
+        [Fact]
+        public void AddPassword_NewPasswordWithEmptyFields_ReturnsException()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            int expectedCount = passwords.Count + 1;
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            PasswordEntry newEntry = new PasswordEntry()
+            {
+                ID = "5",
+                Url = "",
+                Login = "login5",
+                Password = "psw5",
+                Category = "cat2"
+            };
+
+            var exception = Assert.Throws<Exception>(() => mainProcess.AddPassword(newEntry));
+            Assert.Equal("Required field are not filled in!", exception.Message);
+        }
+
+        [Fact]
+        public void RemovePassword_PasswordToRemove_PasswordSuccessfullyRemoved()
+        {
+            int indexOfRemovedPassword = 1;
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            int expectedCount = passwords.Count - 1;
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+
+            mainProcess.RemovePassword(passwords[indexOfRemovedPassword]);
+            List<PasswordEntry> result = mainProcess.GetPasswords();
+
+            Assert.Equal(expectedCount, result.Count);
+            Assert.False(result.Contains(TestData.GetTestData()[indexOfRemovedPassword]));
+        }
+
+        [Fact]
+        public void ChangePassword_PasswordToChange_PasswordSuccessfullyChanged()
+        {
+            int indexOfChangedPassword = 2;
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+
+            passwords[indexOfChangedPassword].Password = "newPsw";
+            passwords[indexOfChangedPassword].Login = "newLogin";
+            mainProcess.ChangePassword(passwords[indexOfChangedPassword]);
+            PasswordEntry result = mainProcess.GetPasswords()[indexOfChangedPassword];
+
+            Assert.Equal(passwords[indexOfChangedPassword], result);
+        }
+
+        [Fact]
+        public void GetPasswords_PasswordsSuccessfullyReceived()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+
+            List<PasswordEntry> gettedPasswords = mainProcess.GetPasswords();
+
+            Assert.Equal(passwords, gettedPasswords);
+        }
+
+
     }
 }
