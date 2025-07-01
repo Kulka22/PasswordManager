@@ -116,10 +116,10 @@ namespace PasswordManager.Data
             public static List<PasswordEntry> LoadData(string masterPassword, 
                 string filePath, IFileManager fileManager)
             {
-                if (!File.Exists(filePath))
+                if (!fileManager.Exists(filePath))
                     return new List<PasswordEntry>();
 
-                byte[] fileBytes = File.ReadAllBytes(filePath);
+                byte[] fileBytes = fileManager.Read(filePath);
 
                 if (fileBytes.Length < SaltSize + HashSize)
                     throw new InvalidDataException("File is corrupted!");

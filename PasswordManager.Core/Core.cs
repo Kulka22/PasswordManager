@@ -13,8 +13,6 @@ namespace PasswordManager.Core
         public readonly string _filePath;
         private readonly DataManager.IFileManager _fileManager;
 
-        
-
         public MainProcess(string inputPassword, 
             DataManager.IFileManager fileManager = null, string filePath = "psw.json")
         {
