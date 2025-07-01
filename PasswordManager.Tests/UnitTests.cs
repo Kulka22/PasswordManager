@@ -329,5 +329,43 @@ namespace PasswordManager.Tests
             Assert.Equal(cat1List, result["cat1"]);
             Assert.Equal(cat2List, result["cat2"]);
         }
+
+        [Fact]
+        public void GetAllCategories_AllCategoriesSuccessfullyReceived()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            List<string> categories = new List<string>() { "cat1", "cat2" };
+
+            List<string> result = mainProcess.GetAllCategories();
+
+            Assert.Equal(categories, result);
+        }
+
+        [Fact]
+        public void AddAndSavePassword_NewPassword_AddAndSaveNewPassword()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            int expectedCount = passwords.Count + 1;
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            PasswordEntry newEntry = new PasswordEntry()
+            {
+                ID = "5",
+                Service = "service_5",
+                Url = "service5.su",
+                Login = "login5",
+                Password = "psw5",
+                Category = "cat2"
+            };
+
+            mainProcess.AddPassword(newEntry);
+            mainProcess.SavePasswords();
+            mainProcess = new MainProcess("qwerty", fileManager);
+            List<PasswordEntry> resultList = mainProcess.GetPasswords();
+
+            Assert.Equal(passwords, resultList);
+        }
     }
 }

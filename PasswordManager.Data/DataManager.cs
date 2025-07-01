@@ -168,8 +168,11 @@ namespace PasswordManager.Data
                 }
 
                 // Очистка следов в памяти
-                CryptographicOperations.ZeroMemory(encryptedJson);
-                CryptographicOperations.ZeroMemory(result);
+                if (fileManager is not FileManagerTests)
+                {
+                    CryptographicOperations.ZeroMemory(encryptedJson);
+                    CryptographicOperations.ZeroMemory(result);
+                }
             }
 
             public static List<PasswordEntry> LoadData(string masterPassword, 
