@@ -10,6 +10,17 @@ namespace PasswordManager.ConsoleInterface
     {
         static void Main(string[] args)
         {
+            string originalMessage = "Hello, world!";
+            string psw = "qwerty";
+            byte[] salt = KeyManager.GenerateSalt();
+            byte[] key = KeyManager.MakeKey(psw, salt);
+            byte[] messageAsByteArray = DataManager.EncodeManager.MakeByteArr(originalMessage);
+            byte[] newSalt = KeyManager.GenerateSalt();
+            byte[] newKey = KeyManager.MakeKey(psw, newSalt);
+
+            byte[] encryptedData = CryptoManager.EncryptManager.EncryptData(messageAsByteArray, key);
+            byte[] decryptedData = CryptoManager.DecryptManager.DecryptData(encryptedData, newKey);
+
             string masterPassword;
             string filePath = "psw.json";
             List<PasswordEntry> passwords = new List<PasswordEntry>();
