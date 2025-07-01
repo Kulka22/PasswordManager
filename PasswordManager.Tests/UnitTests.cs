@@ -348,7 +348,6 @@ namespace PasswordManager.Tests
         {
             FileManagerTests fileManager = new FileManagerTests();
             List<PasswordEntry> passwords = TestData.GetTestData();
-            int expectedCount = passwords.Count + 1;
             MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
             PasswordEntry newEntry = new PasswordEntry()
             {
@@ -366,6 +365,40 @@ namespace PasswordManager.Tests
             List<PasswordEntry> resultList = mainProcess.GetPasswords();
 
             Assert.Equal(passwords, resultList);
+        }
+
+        [Fact]
+        public void RemovePasswordAndSave_PasswordToRemove_PasswordRemovedAndSaved()
+        {
+            int indexOfRemovedPassword = 1;
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+
+            mainProcess.RemovePassword(passwords[indexOfRemovedPassword]);
+            mainProcess.SavePasswords();
+            mainProcess = new MainProcess("qwerty", fileManager);
+            List<PasswordEntry> result = mainProcess.GetPasswords();
+
+            Assert.Equal(passwords, result);
+        }
+
+        [Fact]
+        public void ChangePasswordAndSave_PasswordToChange_PasswordChangedAndSaved()
+        {
+            int indexOfChangedPassword = 2;
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+
+            passwords[indexOfChangedPassword].Password = "newPsw";
+            passwords[indexOfChangedPassword].Login = "newLogin";
+            mainProcess.ChangePassword(passwords[indexOfChangedPassword]);
+            mainProcess.SavePasswords();
+            mainProcess = new MainProcess("qwerty", fileManager);
+            List<PasswordEntry> result = mainProcess.GetPasswords();
+
+            Assert.Equal(passwords, result);
         }
     }
 }
