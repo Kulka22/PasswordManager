@@ -87,7 +87,7 @@ namespace PasswordManager.Tests
             Assert.False(result);
         }
 
-        // Модуль DataManager: EncodeManager
+        // Модуль Data: EncodeManager
         // Протестирован функционал перевода строки в массив байт и обратно
         [Fact]
         public void EncodeManagerMethods_Message_ReturnsTheSameMessage()
@@ -99,5 +99,9 @@ namespace PasswordManager.Tests
 
             Assert.Equal(message, result);
         }
+
+        // Модуль Core: MainProcess
+        // Протестированы методы, с которыми взаимодействует WPF-модуль
+
     }
 }
