@@ -8,6 +8,7 @@ namespace PasswordManager.Tests
 {
     public class UnitTests
     {
+        // Модуль Crypto: CryptoManager
         // Протестирован функционал шифровки сообщения и его дешифровки
         [Fact]
         public void EncryptAndDecrypt_Message_ReturnTheSameMessage()
@@ -24,5 +25,7 @@ namespace PasswordManager.Tests
 
             Assert.Equal(originalMessage, comparedStr);
         }
+
+
     }
 }

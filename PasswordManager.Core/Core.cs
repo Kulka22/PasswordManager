@@ -117,13 +117,11 @@ namespace PasswordManager.Core
                 throw new Exception("File not found!");
 
             byte[] fileBytes = File.ReadAllBytes(filePath);
-            byte[] salt = new byte[SaltSize];
             byte[] storedMasterHash = new byte[HashSize];
 
-            Buffer.BlockCopy(fileBytes, 0, salt, 0, SaltSize);
-            Buffer.BlockCopy(fileBytes, salt.Length, storedMasterHash, 0, HashSize);
+            Buffer.BlockCopy(fileBytes, SaltSize, storedMasterHash, 0, HashSize);
 
-            bool result = KeyManager.ComparePasswords(inputPassword, storedMasterHash, salt);
+            bool result = KeyManager.ComparePasswords(inputPassword, storedMasterHash);
             if (result)
                 _isStartAllowed = true;
 

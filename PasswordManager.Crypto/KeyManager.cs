@@ -19,7 +19,7 @@ namespace PasswordManager.Crypto
             return deriveBytes.GetBytes(32);
         }
 
-        public static bool ComparePasswords(string inputPassword, byte[] storedHash, byte[] salt)
+        public static bool ComparePasswords(string inputPassword, byte[] storedHash)
         {
             byte[] inputHash = SHA256.HashData(Encoding.UTF8.GetBytes(inputPassword));
             return CryptographicOperations.FixedTimeEquals(inputHash, storedHash);
