@@ -179,7 +179,6 @@ namespace PasswordManager.Core
                         if (!result.ContainsKey(category))
                             result[category] = new List<PasswordEntry>();
                         result[category].Add(password);
-                        passwords.Remove(password);
                     }
                 }    
             }

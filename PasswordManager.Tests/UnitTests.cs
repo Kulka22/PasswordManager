@@ -302,6 +302,32 @@ namespace PasswordManager.Tests
             Assert.Equal(passwords, gettedPasswords);
         }
 
+        [Fact]
+        public void FilterCategories_ListOfCategories_FilteredEntries()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            List<string> categories = new List<string>() { "cat1", "cat2"};
+            List<PasswordEntry> cat1List = new List<PasswordEntry>()
+            {
+                passwords[0],
+                passwords[1]
+            };
+            List<PasswordEntry> cat2List = new List<PasswordEntry>()
+            {
+                passwords[2],
+                passwords[3]
+            };
 
+            Dictionary<string, List<PasswordEntry>> result = 
+                mainProcess.FilterCategories(categories);
+            
+            Assert.Equal(2, result.Count);
+            Assert.Equal(2, result["cat1"].Count);
+            Assert.Equal(2, result["cat2"].Count);
+            Assert.Equal(cat1List, result["cat1"]);
+            Assert.Equal(cat2List, result["cat2"]);
+        }
     }
 }
