@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using PasswordManager.Crypto;
 using PasswordManager.Data;
 using static PasswordManager.Data.DataManager.JsonManager;
+using static PasswordManager.Data.DataManager;
 using PasswordManager.Core;
 using System.Text;
 using System.Security.Cryptography;
@@ -101,9 +102,15 @@ namespace PasswordManager.Tests
         }
 
         // Модуль Core: MainProcess
-        // Протестированы методы, которые не зависят напрямую от файловой системы.
-        // То есть, их можно покрыть юнит-тестами.
-        
-
+        // Методы протестированы с помощью подхода Dependency Injection.
+        // Файловую систему эмулирует специальный класс.
+        [Fact]
+        public void FindRepetition_NewEntry_ReturnsTupleOfEntryAndTrue()
+        {
+            FileManagerTests fileManager = new FileManagerTests();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager);
+            List<PasswordEntry> passwords = new List<PasswordEntry>();
+            passwords.Add(new PasswordEntry() { });
+        }
     }
 }

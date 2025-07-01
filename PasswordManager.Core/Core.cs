@@ -13,8 +13,8 @@ namespace PasswordManager.Core
         public readonly string _filePath;
         private readonly DataManager.IFileManager _fileManager;
 
-        public MainProcess(string inputPassword, 
-            DataManager.IFileManager fileManager = null, string filePath = "psw.json")
+        public MainProcess(string inputPassword, DataManager.IFileManager fileManager = null,
+            List<PasswordEntry> passwords = null, string filePath = "psw.json")
         {
             if (fileManager == null)
                 _fileManager = new DataManager.FileManager();
@@ -26,7 +26,10 @@ namespace PasswordManager.Core
                 throw new Exception("MASTER-PASSWORD MUST BE SET!");
             _filePath = filePath;
             _masterPassword = inputPassword;
-            _passwords = LoadData(_masterPassword, _filePath, _fileManager);
+            if (passwords == null)
+                _passwords = LoadData(_masterPassword, _filePath, _fileManager);
+            else
+                _passwords = passwords;
             _isStartAllowed = true;
         }
 
