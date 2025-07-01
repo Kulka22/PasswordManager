@@ -114,7 +114,7 @@ namespace PasswordManager.Core
                     Category = password.Category
                 });
             }
-            return _passwords;
+            return passwords;
         }
 
         public void SavePasswords()
@@ -186,7 +186,8 @@ namespace PasswordManager.Core
             List<string> result = new List<string>();
             foreach (PasswordEntry password in _passwords)
             {
-                if (!result.Contains(password.Category))
+                if (password.Category != null && password.Category.Length > 0
+                    && !result.Contains(password.Category))
                     result.Add(password.Category);
             }
             return result;
