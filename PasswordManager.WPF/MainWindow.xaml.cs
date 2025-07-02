@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.Metrics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Newtonsoft.Json.Linq;
 using PasswordManager.Core;
@@ -22,10 +24,12 @@ namespace PasswordManager.WPF
     public partial class MainWindow : Window
     {
         private MainProcess mainProcess;
+        private List<string> categories = new List<string>();
         public class ItemViewModel : INotifyPropertyChanged
         {
             public PasswordEntry _passwordEntry;
             private string _servise;
+            private string _category;
             private string _url;
             private string _loginText;
             private string _passwordText;
@@ -33,6 +37,11 @@ namespace PasswordManager.WPF
             {
                 get => _servise;
                 set => _servise = value;
+            }
+            public string Category
+            {
+                get => _category;
+                set => _category = value;
             }
             public string Url
             {
@@ -66,6 +75,7 @@ namespace PasswordManager.WPF
             {
                 _passwordEntry = item;
                 Service = item.Service;
+                Category = item.Category;
                 Url = item.Url;
                 PasswordText = new string('*', _passwordEntry.Password.Length);
                 LoginText = new string('*', _passwordEntry.Login.Length);
@@ -104,8 +114,7 @@ namespace PasswordManager.WPF
                 RegistrationWindow registrationWindow = new RegistrationWindow();
                 if (registrationWindow.ShowDialog() == true)
                 {
-                    Start(registrationWindow.EntryPassword.Text);
-                    UpdateItems();
+                    mainProcess = new MainProcess(registrationWindow.EntryPassword.Text);
                 }
                 else
                 {
@@ -118,16 +127,44 @@ namespace PasswordManager.WPF
                 bool? result = signInWindow.ShowDialog();
                 if (result == true)
                 {
-                    Start(signInWindow.EntryPassword.Password);
+                    mainProcess = new MainProcess(signInWindow.EntryPassword.Password);
                 }
                 else Environment.Exit(1);
             }
             DataContext = this;
+
         }
 
-        private void Start(string master)
+        private void Checked(object sender, RoutedEventArgs e)
         {
-            mainProcess = new MainProcess(master);
+            var temp = (CheckBox)sender;
+            categories.Add(temp.Content.ToString());
+            UpdateItems();
+        }
+        private void Unchecked(object sender, RoutedEventArgs e)
+        {
+            var temp = (CheckBox)sender;
+            categories.Remove(temp.Content.ToString());
+            UpdateItems();
+        }
+        private void SetExpander()
+        {
+            StackPanel stackPanel = new StackPanel();
+            foreach (var i in mainProcess.GetAllCategories())
+            {
+                var temp = new CheckBox();
+                temp.Content = i;
+                if (categories.Contains(i)) temp.IsChecked = true;
+                temp.Checked += Checked;
+                temp.Unchecked += Unchecked;
+                stackPanel.Children.Add(temp);
+            }
+            CategoriesExpander.Content = stackPanel;
+        }
+
+        private void LoadedData(object sender, RoutedEventArgs e)
+        {
+            
             UpdateItems();
         }
         public void AddData(object sender, RoutedEventArgs e)
@@ -137,6 +174,7 @@ namespace PasswordManager.WPF
             {
                 PasswordEntry newItem = new PasswordEntry();
                 newItem.Service = addDataWindow.ServiceText.Text;
+                newItem.Category = addDataWindow.CategoryText.Text;
                 newItem.Url = addDataWindow.UrlText.Text;
                 newItem.Login = addDataWindow.LoginText.Text;
                 newItem.Password = addDataWindow.PasswordText.Text;
@@ -160,14 +198,10 @@ namespace PasswordManager.WPF
                         {
                             tuple.Value.Item1.Password = newItem.Password;
                             mainProcess.ChangePassword(tuple.Value.Item1);
-                            
+                            mainProcess.SavePasswords();
+                            UpdateItems();
+
                         }
-                        else
-                        {
-                            mainProcess.AddPassword(newItem);
-                        }
-                        mainProcess.SavePasswords();
-                        UpdateItems();
                     }
                 }
                 else
@@ -181,16 +215,21 @@ namespace PasswordManager.WPF
         }
         private void ChangeData(PasswordEntry item)
         {
-            ChangeDataWindow changeDataWindow = new ChangeDataWindow();
-            changeDataWindow.URL = item.Url;
-            changeDataWindow.NewLogin = item.Login;
-            changeDataWindow.NewPassword = item.Password;
+            AddDataWindow changeDataWindow = new AddDataWindow();
+            changeDataWindow.Title = "Изменить запись";
+            changeDataWindow.ServiceText.Text = item.Service;
+            changeDataWindow.UrlText.Text = item.Url;
+            changeDataWindow.CategoryText.Text = item.Category;
+            changeDataWindow.LoginText.Text = item.Login;
+            changeDataWindow.PasswordText.Text = item.Password;
 
             if (changeDataWindow.ShowDialog() == true)
             {
-                item.Url = changeDataWindow.URL;
-                item.Login = changeDataWindow.NewLogin;
-                item.Password = changeDataWindow.NewPassword;
+                item.Service = changeDataWindow.ServiceText.Text;
+                item.Url = changeDataWindow.UrlText.Text;
+                item.Category = changeDataWindow.CategoryText.Text;
+                item.Login = changeDataWindow.LoginText.Text;
+                item.Password = changeDataWindow.PasswordText.Text;
                 mainProcess.ChangePassword(item);
                 mainProcess.SavePasswords();
 
@@ -211,12 +250,29 @@ namespace PasswordManager.WPF
 
         private void UpdateItems()
         {
+            SetExpander();
             Items.Clear();
-            List<PasswordEntry> passItems = mainProcess.GetPasswords();
 
-            foreach (PasswordEntry item in passItems)
+            if (categories != null && categories.Count > 0)
             {
-                Items.Add(new ItemViewModel(item, value => ChangeData(value), value => DeleteData(value)));
+                Dictionary<string, List<PasswordEntry>> sortedPasswords = mainProcess.FilterCategories(categories);
+                foreach (string category in sortedPasswords.Keys)
+                {
+                    foreach (PasswordEntry entry in sortedPasswords[category])
+                    {
+                        Items.Add(new ItemViewModel(entry, value => ChangeData(value), value => DeleteData(value)));
+                    }
+                }
+                
+            }
+            else
+            {
+                List<PasswordEntry> passItems = mainProcess.GetPasswords();
+
+                foreach (PasswordEntry item in passItems)
+                {
+                    Items.Add(new ItemViewModel(item, value => ChangeData(value), value => DeleteData(value)));
+                }
             }
         }
     }

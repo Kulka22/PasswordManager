@@ -10,11 +10,12 @@
         <ListBox Margin="20,20,0,20" VerticalAlignment="Top" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Service" Height="25" Width="60" />
-                <TextBox Text="{Binding URL, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="200" />
+                <TextBox Text="{Binding Service, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="200" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <!--Место для категорий-->
+                <Label Content="Category" Height="25" Width="60" />
+                <TextBox Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="200" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
@@ -32,6 +33,12 @@
                 <TextBox Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="200" />
             </StackPanel>
         </ListBox>
-        <Button Content="Сохранить" HorizontalAlignment="Left" Margin="236,192,0,0" VerticalAlignment="Top" Width="128" Height="50" Click="ButtonOkClick"/>
+        
+        <StackPanel Orientation="Vertical" Margin="0,180,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Label x:Name="errorSULabel" Content="Должно быть заполнено хотя бы одно поле: Url или Service" Visibility="Collapsed" Foreground="Red" />
+            <Label x:Name="errorLPLabel" Content="Должно быть заполнено хотя бы одно поле: Login или Password" Visibility="Collapsed" Foreground="Red" />
+        </StackPanel>
+        
+        <Button Content="Сохранить" HorizontalAlignment="Left" Margin="236,260,0,0" VerticalAlignment="Top" Width="128" Height="50" Click="ButtonOkClick"/>
     </Grid>
 </Window>

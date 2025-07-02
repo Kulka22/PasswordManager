@@ -16,13 +16,26 @@ namespace PasswordManager.WPF
 {
     public partial class ChangeDataWindow : Window
     {
+        private string _service;
         private string _url;
+        private string _category;
         private string _newLogin;
         private string _newPassword;
+
+        public string Service
+        {
+            get => _service;
+            set => _service = value;
+        }
         public string URL
         {
             get => _url;
             set => _url = value;
+        }
+        public string Category
+        {
+            get => _category;
+            set => _category = value;
         }
         public string NewLogin 
         { 
