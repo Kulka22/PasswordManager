@@ -190,11 +190,15 @@ namespace PasswordManager.Core
         public List<string> GetAllCategories()
         {
             List<string> result = new List<string>();
+            string category;
             foreach (PasswordEntry password in _passwords)
             {
-                if (password.Category != null && password.Category.Length > 0
-                    && !result.Contains(password.Category))
-                    result.Add(password.Category);
+                if (password.Category != null && password.Category.Length > 0)
+                    category = password.Category.ToLower();
+                else
+                    continue;
+                if (!result.Contains(category))
+                    result.Add(category);
             }
             return result;
         }
