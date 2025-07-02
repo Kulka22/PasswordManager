@@ -58,7 +58,8 @@ namespace PasswordManager.Core
             foreach (PasswordEntry password in passwords)
             {
                 if ((password.Service == inputPassword.Service ||
-                    password.Url == inputPassword.Url) && password.Login == password.Login)
+                    password.Url == inputPassword.Url) && 
+                    password.Login == inputPassword.Login)
                 {
                     if (password.Password == inputPassword.Password)
                         return (password, true);
