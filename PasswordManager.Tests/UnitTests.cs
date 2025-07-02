@@ -214,6 +214,28 @@ namespace PasswordManager.Tests
         }
 
         [Fact]
+        public void FindRepetition_NewEntry_ReturnsNull()
+        {
+            // DOBAV!!!!!!!!!!
+            FileManagerTests fileManager = new FileManagerTests();
+            List<PasswordEntry> passwords = TestData.GetTestData();
+            MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
+            PasswordEntry newEntry = new PasswordEntry()
+            {
+                ID = "5",
+                Service = "service_2",
+                Url = "service2.com",
+                Login = "login5",
+                Password = "psw2",
+                Category = "cat1"
+            };
+
+            var result = mainProcess.FindRepetition(newEntry);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public void AddPassword_NewPassword_ReturnsListWithNewPassword()
         {
             FileManagerTests fileManager = new FileManagerTests();
