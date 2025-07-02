@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using PasswordManager.Core;
-using PasswordManager.Crypto;
-using PasswordManager.Data;
+﻿using PasswordManager.Core;
 using static PasswordManager.Data.DataManager;
 using static PasswordManager.Data.DataManager.JsonManager;
 
@@ -9,69 +6,6 @@ namespace PasswordManager.ConsoleInterface
 {
     internal class Program
     {
-        private class TestData
-        {
-            private static List<PasswordEntry> testData;
-            static TestData()
-            {
-                testData = new List<PasswordEntry>()
-                {
-                    new PasswordEntry()
-                    {
-                        ID = "1",
-                        Service = "service_1",
-                        Url = "service1.com",
-                        Login = "login1",
-                        Password = "psw1",
-                        Category = "cat1"
-                    },
-                    new PasswordEntry()
-                    {
-                        ID = "2",
-                        Service = "service_2",
-                        Url = "service2.com",
-                        Login = "login2",
-                        Password = "psw2",
-                        Category = "cat1"
-                    },
-                    new PasswordEntry()
-                    {
-                        ID = "3",
-                        Service = "service_3",
-                        Url = "service3.ru",
-                        Login = "login3",
-                        Password = "psw3",
-                        Category = "cat2"
-                    },
-                    new PasswordEntry()
-                    {
-                        ID = "4",
-                        Service = "service_4",
-                        Url = "service4.com",
-                        Login = "login4",
-                        Password = "psw4",
-                        Category = "cat2"
-                    }
-                };
-            }
-            public static List<PasswordEntry> GetTestData()
-            {
-                List<PasswordEntry> outputTestData = new List<PasswordEntry>();
-                foreach (PasswordEntry password in testData)
-                {
-                    outputTestData.Add(new PasswordEntry()
-                    {
-                        ID = password.ID,
-                        Service = password.Service,
-                        Url = password.Url,
-                        Login = password.Login,
-                        Password = password.Password,
-                        Category = password.Category
-                    });
-                }
-                return outputTestData;
-            }
-        }
         static void Main(string[] args)
         {
             string masterPassword;
