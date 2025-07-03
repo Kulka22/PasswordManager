@@ -3,8 +3,6 @@ using static PasswordManager.Crypto.CryptoManager;
 using static PasswordManager.Crypto.KeyManager;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
-using PasswordManager.Crypto;
 
 namespace PasswordManager.Data
 {
@@ -133,7 +131,7 @@ namespace PasswordManager.Data
             {
                 // Каждый раз при сохранении генерируем новую соль
                 byte[] salt = GenerateSalt();
-                byte[] masterHash = SHA256.HashData(Encoding.UTF8.GetBytes(masterPassword));
+                byte[] masterHash = SHA256.HashData(EncodeManager.MakeByteArr(masterPassword));
                 byte[] newKey = MakeKey(masterPassword, salt);
 
                 bool isFirstRun = !fileManager.Exists(filePath);
