@@ -27,7 +27,7 @@ namespace PasswordManager.WPF
 
         private void ButtonOkClick(object sender, RoutedEventArgs e)
         {
-            if (MainProcess.CheckMasterPassword(EntryPassword.Password, "psw.json"))
+            if (MainProcess.CheckMasterPassword(EntryPassword.Password))
             {
                 DialogResult = true;
                 Close();

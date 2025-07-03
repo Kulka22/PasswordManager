@@ -10,22 +10,39 @@ namespace PasswordManager.Core
         private string _masterPassword;
         private List<PasswordEntry> _passwords;
         private static bool _isStartAllowed = false;
-        public readonly string _filePath;
         private readonly DataManager.IFileManager _fileManager;
+        private static readonly string _appDataPath;
+        private static string _filePath;
+        public readonly string _testFilePath;
+
+        static MainProcess()
+        {
+            _appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "PasswordManager");
+
+            if (!Directory.Exists(_appDataPath))
+                Directory.CreateDirectory(_appDataPath);
+
+            _filePath = Path.Combine(_appDataPath, "psw.json");
+        }
 
         public MainProcess(string inputPassword, DataManager.IFileManager fileManager = null,
-            List<PasswordEntry> passwords = null, string filePath = "psw.json")
+            List<PasswordEntry> passwords = null, string filePath = null)
         {
+            if (filePath != null)
+                _filePath = filePath;
             if (fileManager == null)
                 _fileManager = new DataManager.FileManager();
             else
                 _fileManager = fileManager;
-            if (!_isStartAllowed && _fileManager.Exists(filePath))
+            if (!_isStartAllowed && _fileManager.Exists(_filePath))
                 throw new Exception("YOU DONT HAVE ACCESS!");
             if (inputPassword == null || inputPassword.Length == 0)
                 throw new Exception("MASTER-PASSWORD MUST BE SET!");
-            _filePath = filePath;
+
             _masterPassword = inputPassword;
+
             if (passwords == null)
                 _passwords = LoadData(_masterPassword, _filePath, _fileManager);
             else
@@ -34,8 +51,10 @@ namespace PasswordManager.Core
         }
 
         // Проверяем, есть ли файл и нужна ли регистрация
-        public static bool GetRegStatus(string filePath)
+        public static bool GetRegStatus(string filePath = null)
         {
+            if (filePath == null)
+                return File.Exists(_filePath);
             return File.Exists(filePath);
         }
 
@@ -128,8 +147,11 @@ namespace PasswordManager.Core
             SaveData(_passwords, _masterPassword, _filePath, _fileManager);
         }
 
-        public static bool CheckMasterPassword(string inputPassword, string filePath)
+        public static bool CheckMasterPassword(string inputPassword, string filePath = null)
         {
+            if (filePath == null)
+                filePath = _filePath;
+
             if (!File.Exists(filePath))
                 throw new Exception("File not found!");
 

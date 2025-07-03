@@ -84,6 +84,10 @@ namespace PasswordManager.Tests
         public void SaveDataAndCheckMasterPassword_MasterPassword_ReturnsTrue()
         {
             string tempFile = "CheckPasswordTest.json";
+
+            if (File.Exists(tempFile))
+                File.Delete(tempFile);
+
             string password = MainProcess.GeneratePassword(16);
             MainProcess main = new MainProcess(password, null, null, tempFile);
 
@@ -91,7 +95,7 @@ namespace PasswordManager.Tests
             bool result = MainProcess.CheckMasterPassword(password, tempFile);
 
             Assert.True(result);
-            
+
             if (File.Exists(tempFile))
                 File.Delete(tempFile);
         }

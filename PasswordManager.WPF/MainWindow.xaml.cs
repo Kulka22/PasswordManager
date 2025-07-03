@@ -109,7 +109,7 @@ namespace PasswordManager.WPF
         public ObservableCollection<ItemViewModel> Items { get; } = new ObservableCollection<ItemViewModel>();
         public MainWindow()
         {
-            if (!MainProcess.GetRegStatus("psw.json"))
+            if (!MainProcess.GetRegStatus())
             {
                 RegistrationWindow registrationWindow = new RegistrationWindow();
                 if (registrationWindow.ShowDialog() == true)

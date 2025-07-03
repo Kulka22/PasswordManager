@@ -59,7 +59,7 @@ namespace PasswordManager.ConsoleInterface
                 }
             }
 
-            MainProcess main = new MainProcess(masterPassword);
+            MainProcess main = new MainProcess(masterPassword, null, null, filePath);
             passwords = main.GetPasswords();
 
             string inputButton;
