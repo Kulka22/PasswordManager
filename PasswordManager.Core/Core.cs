@@ -95,6 +95,8 @@ namespace PasswordManager.Core
                 (password.Url == null || password.Url.Length == 0)))
                 throw new Exception("Required field are not filled in!");
             password.ID = Guid.NewGuid().ToString();
+            if (password.Category != null && password.Category.Length > 0)
+                password.Category = password.Category.ToLower();
             _passwords.Add(password);
         }
 
@@ -215,12 +217,9 @@ namespace PasswordManager.Core
             string category;
             foreach (PasswordEntry password in _passwords)
             {
-                if (password.Category != null && password.Category.Length > 0)
-                    category = password.Category.ToLower();
-                else
-                    continue;
-                if (!result.Contains(category))
-                    result.Add(category);
+                if (password.Category != null && password.Category.Length > 0 &&
+                    !result.Contains(password.Category))
+                    result.Add(password.Category);
             }
             return result;
         }
