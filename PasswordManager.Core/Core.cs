@@ -13,7 +13,7 @@ namespace PasswordManager.Core
         private readonly DataManager.IFileManager _fileManager;
         private static readonly string _appDataPath;
         private static string _filePath;
-        public readonly string _testFilePath;
+        private readonly string _testFilePath;
 
         static MainProcess()
         {

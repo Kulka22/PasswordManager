@@ -216,7 +216,6 @@ namespace PasswordManager.Tests
         [Fact]
         public void FindRepetition_NewEntry_ReturnsNull()
         {
-            // DOBAV!!!!!!!!!!
             FileManagerTests fileManager = new FileManagerTests();
             List<PasswordEntry> passwords = TestData.GetTestData();
             MainProcess mainProcess = new MainProcess("qwerty", fileManager, passwords);
