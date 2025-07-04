@@ -197,7 +197,7 @@ namespace PasswordManager.Tests
             mainProcess = new MainProcess("qwerty", fileManager, null, filePath);
             List<PasswordEntry> result = mainProcess.GetPasswords();
 
-            Assert.True(!result.Contains(passwords[indexOfRemovedPassword]));
+            Assert.DoesNotContain(passwords[indexOfRemovedPassword], result);
             Assert.Equal(passwords.Count - 1, result.Count);
         }
 
