@@ -76,9 +76,9 @@ namespace PasswordManager.Core
             List<PasswordEntry> passwords = GetPasswords();
             foreach (PasswordEntry password in passwords)
             {
-                if ((password.Service == inputPassword.Service ||
-                    password.Url == inputPassword.Url) && 
-                    password.Login == inputPassword.Login)
+                if (((password.Service == inputPassword.Service && password.Service.Length > 0) ||
+                    (password.Url == inputPassword.Url && password.Url.Length > 0)) && 
+                    password.Login == inputPassword.Login && inputPassword.Login.Length > 0)
                 {
                     if (password.Password == inputPassword.Password)
                         return (password, true);
