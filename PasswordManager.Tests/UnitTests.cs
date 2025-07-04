@@ -292,7 +292,7 @@ namespace PasswordManager.Tests
             List<PasswordEntry> result = mainProcess.GetPasswords();
 
             Assert.Equal(expectedCount, result.Count);
-            Assert.False(result.Contains(TestData.GetTestData()[indexOfRemovedPassword]));
+            Assert.DoesNotContain(TestData.GetTestData()[indexOfRemovedPassword], result);
         }
 
         [Fact]
