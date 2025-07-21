@@ -19,6 +19,14 @@ namespace PasswordManager.WPF
     /// </summary>
     public partial class ConfirmationWindow : Window
     {
+        private string _message;
+
+        public string Message
+        {
+            get => _message;
+            set => _message = value;
+        }
+
         public ConfirmationWindow()
         {
             InitializeComponent();

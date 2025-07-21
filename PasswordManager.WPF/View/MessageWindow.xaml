@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PasswordManager.WPF"
         mc:Ignorable="d"
-        Title="Message" Height="130" Width="270">
+        Title="Message" 
+        SizeToContent="WidthAndHeight">
     <Grid>
-        <Label x:Name="MessageLabel" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="left"/>
+        <TextBox Text="{Binding Message}" Margin="10,10,10,20" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
     </Grid>
 </Window>

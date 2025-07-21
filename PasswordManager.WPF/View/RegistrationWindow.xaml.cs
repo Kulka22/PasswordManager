@@ -22,7 +22,7 @@ namespace PasswordManager.WPF
         private const string prohibitedSymbols = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя @/?";
         private bool lowCharacters = false;
         private bool highCharacters = false;
-        private const string consecutiveCharactersString = "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz qwertyuiop asdfghjkl zxcvbnm,. qaz wsx edc rfv tgb yhn ujm ik, ol. 01234567890 09876543210 poiuytrewq lkjhgfdsa mnbvcxz zaq xsw cde vfr bgt nhy mju abcdefghijklmnopqrstuvwxyz";
+        private const string consecutiveCharactersString = "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz qwertyuiop asdfghjkl zxcvbnm,. qaz wsx edc rfv tgb yhn ujm ik, ol. 01234567890 09876543210 poiuytrewq lkjhgfdsa mnbvcxz zaq xsw cde vfr bgt nhy mju abcdefghijklmnopqrstuvwxyz 111 222 333 444 555 666 777 888 999 000";
 
         private bool useNumbers = false;
         private const string letters = "abcdefghijklmnopqrstuvwxyz";
@@ -68,7 +68,7 @@ namespace PasswordManager.WPF
             {
                 for (int i = _lastPass.Length; i < _newPass.Length; i++)
                 {
-                    if (prohibitedSymbols.Contains(_newPass[i]))
+                    if (prohibitedSymbols.Contains(char.ToLower(_newPass[i])))
                     {
                         continue;
                     }
@@ -112,7 +112,7 @@ namespace PasswordManager.WPF
 
                     if (_lastPass.Length > 2)
                     {
-                        if (consecutiveCharactersString.Contains(_lastPass.Substring(_lastPass.Length - 3)))
+                        if (consecutiveCharactersString.Contains(_lastPass.ToLower().Substring(_lastPass.Length - 3)))
                         {
                             consecutiveCharactersLabel.Foreground = Brushes.Red;
                         }
@@ -132,13 +132,9 @@ namespace PasswordManager.WPF
         {
             if (EntryPassword.Text == CheckEntryPassword.Text)
             {
-                matchLabel.Visibility = Visibility.Visible;
-                nonMatchLabel.Visibility = Visibility.Hidden;
             }
             else
             {
-                matchLabel.Visibility = Visibility.Hidden;
-                nonMatchLabel.Visibility = Visibility.Visible;
             }
         }
 
@@ -151,7 +147,6 @@ namespace PasswordManager.WPF
             }
             else
             {
-                ErrorLabel.Visibility = 0;
             }
         }
     }
