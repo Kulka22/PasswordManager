@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,14 +15,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using PasswordManager.Core;
+using PasswordManager.WPF.Models;
 
 namespace PasswordManager.WPF
 {
 
     public partial class DataWindow : Window
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         List<char> forbiddenSymbols = new List<char>
             {
@@ -52,7 +56,6 @@ namespace PasswordManager.WPF
             set
             {
                 _servise = value;
-                OnPropertyChanged(nameof(Service));
             }
         }
         public string Category
@@ -61,7 +64,6 @@ namespace PasswordManager.WPF
             set
             {
                 _category = value;
-                OnPropertyChanged(nameof(Category));
             }
         }
         public string Url
@@ -70,7 +72,6 @@ namespace PasswordManager.WPF
             set
             {
                 _url = value;
-                OnPropertyChanged(nameof(Url));
             }
         }
         public string Login
@@ -79,7 +80,6 @@ namespace PasswordManager.WPF
             set
             {
                 _login = value;
-                OnPropertyChanged(nameof(Login));
             }
         }
         public string Password
@@ -87,19 +87,25 @@ namespace PasswordManager.WPF
             get => _password;
             set
             {
+                Debug.WriteLine(_password);
                 _password = value;
                 OnPropertyChanged(nameof(Password));
+                Debug.WriteLine(_password);
             }
         }
+
+        public ICommand GeneratePasswordCommand => new RelayCommand(GeneratePassword);
         public DataWindow()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        private void GeneratePassword(object sender, RoutedEventArgs e)
+        private void GeneratePassword()
         {
+            Debug.WriteLine(Password);
             Password = MainProcess.GeneratePassword(10, forbiddenSymbols);
+            Debug.WriteLine(Password);
         }
 
         private void HideError(object sender, RoutedEventArgs e)

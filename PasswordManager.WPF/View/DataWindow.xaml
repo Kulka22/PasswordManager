@@ -31,14 +31,14 @@
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Логин" VerticalAlignment="Center" Width="60"/>
-                <TextBox Text="{Binding Login}" Height="25" Width="200" TextChanged="HideError" />
+                <TextBox Text="{Binding Login, UpdateSourceTrigger=LostFocus}" Height="25" Width="200" TextChanged="HideError" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Пароль" Height="25" Width="60" />
-                <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" Height="25" Width="200" TextChanged="HideError" />
+                <TextBlock Text="Пароль" Width="60" VerticalAlignment="Center" />
+                <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="25" Width="200" TextChanged="HideError" />
                 
-                <Button Click="GeneratePassword" Width="25" Height="25" Margin="5,0,0,0">
+                <Button Command="{Binding GeneratePasswordCommand}" Width="25" Height="25" Margin="5,0,0,0">
                     <Image Source="/Images/dice.png" Width="20" Height="20"/>
                 </Button>
             </StackPanel>

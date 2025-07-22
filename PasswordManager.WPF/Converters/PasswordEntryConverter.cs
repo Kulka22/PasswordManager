@@ -10,6 +10,7 @@ namespace PasswordManager.WPF.Converters
 
             return new PasswordEntry
             {
+                ID = externalEntry.ID,
                 Service = externalEntry.Service ?? string.Empty,
                 Category = externalEntry.Category ?? string.Empty,
                 Url = externalEntry.Url ?? string.Empty,
@@ -23,6 +24,7 @@ namespace PasswordManager.WPF.Converters
             if (localEntry == null) return null;
             return new Data.DataManager.JsonManager.PasswordEntry
             {
+                ID = localEntry.ID,
                 Service = localEntry.Service ?? string.Empty,
                 Category = localEntry.Category ?? string.Empty,
                 Url = localEntry.Url ?? string.Empty,

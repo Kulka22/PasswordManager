@@ -28,18 +28,22 @@
                             <TextBox Text="{Binding Service}" Width="80" Margin="5" IsReadOnly="True" />
                             <TextBox Text="{Binding Category}" Width="80" Margin="5" IsReadOnly="True" />
                             <TextBox Text="{Binding Url}" Width="100" Margin="5" IsReadOnly="True"/>
-                            <TextBox Text="{Binding Login}" Width="100" Margin="5" IsReadOnly="True"/>
-                            <TextBox Text="{Binding Password}" Width="100" Margin="5" IsReadOnly="True"/>
+                            <TextBox Text="{Binding DisplayLogin, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Width="100" Margin="5" IsReadOnly="True"/>
+                            <TextBox Text="{Binding DisplayPassword, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Width="100" Margin="5" IsReadOnly="True"/>
                         </StackPanel>
                         <!-- Кнопки -->
                         <StackPanel Orientation="Horizontal">
-                            <Button Command="{Binding ToggleVisibilityCommand }" Margin="5" Width="30" Height="30">
+                            <Button Command="{Binding ToggleVisibilityCommand}" Margin="5" Width="30" Height="30">
                                 <Image Source="/Images/eye.png" Width="20" Height="20" Stretch="Uniform"/>
                             </Button>
-                            <Button Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" Margin="5" Width="30" Height="30">
+                            <Button Command="{Binding Path=DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                    CommandParameter="{Binding}" 
+                                    Margin="5" Width="30" Height="30">
                                 <Image Source="/Images/pencil.png" Width="20" Height="20"/>
                             </Button>
-                            <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" Margin="5" Width="30" Height="30">
+                            <Button Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter ="{Binding}" 
+                                    Margin="5" Width="30" Height="30">
                                 <Image Source="/Images/close.png" Width="20" Height="20"/>
                             </Button>
                         </StackPanel>
