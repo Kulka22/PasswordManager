@@ -148,7 +148,8 @@ namespace PasswordManager.Core
 
         public void SavePasswords()
         {
-            SaveData(_passwords, _masterPassword, _filePath, _fileManager);
+            Task.Run(() => SaveData(_passwords, _masterPassword, _filePath, _fileManager));
+            //SaveData(_passwords, _masterPassword, _filePath, _fileManager);
         }
 
         public static bool CheckMasterPassword(string inputPassword, string filePath = null)
