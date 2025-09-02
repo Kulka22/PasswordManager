@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace PasswordManager.WPF.Models
 {
-    public class CategoryView : INotifyPropertyChanged
+    public class CategoryModel : INotifyPropertyChanged
     {
         private bool _isSelected;
         public string Name { get; }
@@ -19,7 +19,7 @@ namespace PasswordManager.WPF.Models
         }
         public EventHandler SelectionChanged;
 
-        public CategoryView(string name)
+        public CategoryModel(string name)
         {
             Name = name;
         }

@@ -1,9 +1,36 @@
 ﻿<Application x:Class="PasswordManager.WPF.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PasswordManager.WPF"
-             StartupUri="View\MainWindow.xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
-         
+        <Style TargetType="TextBox" x:Key="ValidatedTextBox">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <!-- Красная рамка при ошибке -->
+                            <Border BorderBrush="Red" BorderThickness="1" 
+                            CornerRadius="2" DockPanel.Dock="Top">
+                                <AdornedElementPlaceholder/>
+                            </Border>
+
+                            <!-- Блок с сообщениями об ошибках -->
+                            <ItemsControl ItemsSource="{Binding}" 
+                                 DockPanel.Dock="Bottom"
+                                 Margin="0 5 0 0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="АЩИПКА" 
+                                           Foreground="Red"
+                                           FontSize="12"
+                                           HorizontalAlignment="Left"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
+    
 </Application>

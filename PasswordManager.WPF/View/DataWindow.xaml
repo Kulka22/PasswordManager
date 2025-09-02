@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PasswordManager.WPF"
+        xmlns:app="clr-namespace:PasswordManager.WPF"
         mc:Ignorable="d"
         Title="" Height="300" Width="400"
         MinWidth="370" MinHeight="300" >
@@ -16,27 +17,33 @@
         <ListBox Grid.Row="0" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" BorderThickness="0" >
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Service" Width="60" VerticalAlignment="Center" />
-                <TextBox Text="{Binding Service}" Height="25" Width="200" TextChanged="HideError" />
+                <TextBox Style="{DynamicResource ValidatedTextBox}"
+                         Text="{Binding Service,
+                                UpdateSourceTrigger=PropertyChanged,
+                                Mode=TwoWay,
+                                ValidatesOnNotifyDataErrors=True}"
+                         Height="25" Width="200"
+                         Margin="10"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Category" VerticalAlignment="Center" Width="60" />
-                <TextBox Text="{Binding Category}" Height="25" Width="200" />
+                <TextBox Style="{DynamicResource ValidatedTextBox}" Text="{Binding Category, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnNotifyDataErrors=True}" Height="25" Width="200" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="URL" VerticalAlignment="Center" Width="60"/>
-                <TextBox Text="{Binding Url}" Height="25" Width="200" TextChanged="HideError" />
+                <TextBox Style="{DynamicResource ValidatedTextBox}" Text="{Binding Url, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnNotifyDataErrors=True}" Height="25" Width="200" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Логин" VerticalAlignment="Center" Width="60"/>
-                <TextBox Text="{Binding Login, UpdateSourceTrigger=LostFocus}" Height="25" Width="200" TextChanged="HideError" />
+                <TextBox Style="{DynamicResource ValidatedTextBox}" Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnNotifyDataErrors=True}" Height="25" Width="200" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Пароль" Width="60" VerticalAlignment="Center" />
-                <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="25" Width="200" TextChanged="HideError" />
+                <TextBox Style="{DynamicResource ValidatedTextBox}" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ValidatesOnNotifyDataErrors=True}" Height="25" Width="200" />
                 
                 <Button Command="{Binding GeneratePasswordCommand}" Width="25" Height="25" Margin="5,0,0,0">
                     <Image Source="/Images/dice.png" Width="20" Height="20"/>
@@ -48,7 +55,7 @@
             <TextBox x:Name="errorSULabel" Text="Должно быть заполнено хотя бы одно поле: Url или Service" HorizontalAlignment="Center" Visibility="Hidden" Foreground="Red" BorderThickness="0" />
             <TextBox x:Name="errorLPLabel" Text="Должно быть заполнено хотя бы одно поле: Login или Password" Visibility="Hidden" HorizontalAlignment="Center" Foreground="Red" BorderThickness="0" />
 
-            <Button Content="Сохранить" Margin="5" HorizontalAlignment="Center" Width="128" Height="50" Click="ButtonOkClick"/>
+            <Button Content="Сохранить" Margin="5" HorizontalAlignment="Center" Width="128" Height="50" Command="{Binding ButtonOkCommand}" />
         </StackPanel>
     </Grid>
 </Window>
