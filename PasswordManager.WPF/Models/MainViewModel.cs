@@ -2,7 +2,6 @@ using PasswordManager.Core;
 using PasswordManager.WPF.Converters;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -11,29 +10,10 @@ namespace PasswordManager.WPF.Models
     public class RelayCommand : ICommand
     {
         private readonly Action _execute;
-        private readonly Func<object, bool> _canExecute;
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }
-
-        public RelayCommand(Action execute, Func<object, bool> canExecute = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
-        [DebuggerStepThrough]
-        public bool CanExecute(object? parameter)
-        {
-            if (_canExecute == null) return true;
-            else
-            {
-                return _canExecute.Invoke(parameter);
-            }
-        }
+        public RelayCommand(Action execute) => _execute = execute;
+        public bool CanExecute(object? parameter) => true;
         public void Execute(object? parameter) => _execute();
+        public event EventHandler? CanExecuteChanged;
     }
     public class RelayCommand<T> : ICommand
     {
@@ -45,16 +25,11 @@ namespace PasswordManager.WPF.Models
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
-        [DebuggerStepThrough]
-        public bool CanExecute(object? parameter)
-        {
-            if (_canExecute == null) return true;
-            else
-            {
-                return (parameter is T typedParam && _canExecute(typedParam));
-            }
-        }
-        public void Execute(object? parameter)
+
+        public bool CanExecute(object parameter) =>
+            _canExecute == null || (parameter is T typedParam && _canExecute(typedParam));
+
+        public void Execute(object parameter)
         {
             if (parameter is T typedParam)
                 _execute(typedParam);
