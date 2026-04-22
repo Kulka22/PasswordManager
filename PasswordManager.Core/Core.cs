@@ -120,8 +120,6 @@ namespace PasswordManager.Core
             {
                 if (_passwords[i].ID == changedPassword.ID)
                 {
-                    if (changedPassword.Category != _passwords[i].Category)
-                        changedPassword.Category = changedPassword.Category.ToLower();
                     _passwords[i] = changedPassword;
                     return;
                 }
