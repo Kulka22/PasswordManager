@@ -1,6 +1,17 @@
-﻿using PasswordManager.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using PasswordManager.Core;
 
 namespace PasswordManager.WPF
 {
@@ -12,12 +23,6 @@ namespace PasswordManager.WPF
         public SignInWindow()
         {
             InitializeComponent();
-
-            EntryPassword.KeyDown += (s, e) =>
-            {
-                if (e.Key == Key.Enter) ButtonOkClick(null, null);
-            };
-            EntryPassword.Focus();
         }
 
         private void ButtonOkClick(object sender, RoutedEventArgs e)
@@ -29,9 +34,7 @@ namespace PasswordManager.WPF
             }
             else
             {
-                ErrorLabel.Visibility = Visibility.Visible;
-                EntryPassword.Clear();
-                EntryPassword.Focus();
+                ErrorLabel.Visibility = 0;
             }
         }
     }

@@ -1,0 +1,15 @@
+﻿<Window x:Class="PasswordManager.WPF.SignInWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PasswordManager.WPF"
+        mc:Ignorable="d"
+        Title="Sign In" Height="150" Width="300">
+    <Grid>
+        <Label Content="Мастер-пароль:" Margin="10,10,0,0" HorizontalAlignment="Left" Width="100" Height="30" VerticalAlignment="Top"/>
+        <PasswordBox x:Name="EntryPassword" Margin="131,10,0,0" HorizontalAlignment="Left" Width="150" Height="30" VerticalAlignment="Top"/>
+        <Button Content="Ввод" Margin="0,75,0,0" Height="30" Width="100" HorizontalAlignment="Center" VerticalAlignment="Top" Click="ButtonOkClick"/>
+        <Label x:Name="ErrorLabel" Content="Неправильный мастер-пароль" Margin="70,45,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Red" Visibility="Hidden"/>
+    </Grid>
+</Window>

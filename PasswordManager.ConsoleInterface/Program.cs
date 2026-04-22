@@ -9,11 +9,12 @@ namespace PasswordManager.ConsoleInterface
         static void Main(string[] args)
         {
             string masterPassword;
+            string filePath = "psw.json";
             List<PasswordEntry> passwords = new List<PasswordEntry>();
 
             // Сначала проверяем первый ли у нас запуск.
             // Если первый, то просим придумать пароль.
-            if (!MainProcess.GetRegStatus())
+            if (!MainProcess.GetRegStatus(filePath))
             {
                 while (true)
                 {
@@ -43,7 +44,7 @@ namespace PasswordManager.ConsoleInterface
                 {
                     Console.Write("Введите мастер-пароль: ");
                     masterPassword = MainProcess.ReadPasswordConsole();
-                    if (MainProcess.CheckMasterPassword(masterPassword))
+                    if (MainProcess.CheckMasterPassword(masterPassword, filePath))
                     {
                         Console.WriteLine("Авторизация прошла успешно!");
                         Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
@@ -58,7 +59,7 @@ namespace PasswordManager.ConsoleInterface
                 }
             }
 
-            MainProcess main = new MainProcess(masterPassword, null, null);
+            MainProcess main = new MainProcess(masterPassword, null, null, filePath);
             passwords = main.GetPasswords();
 
             string inputButton;
