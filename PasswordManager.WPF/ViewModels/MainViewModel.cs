@@ -1,7 +1,5 @@
 using PasswordManager.Core;
 using PasswordManager.WPF.Converters;
-using PasswordManager.WPF.ViewModels;
-using PasswordManager.WPF.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -71,7 +69,6 @@ namespace PasswordManager.WPF.Models
     public class MainViewModel : INotifyPropertyChanged
     {
         private readonly MainProcess _mainProcess;
-        private readonly IDialogService _dialogService;
         private ObservableCollection<PasswordEntry> _allPasswords;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -81,29 +78,26 @@ namespace PasswordManager.WPF.Models
         }
 
         public ObservableCollection<PasswordEntry> FilteredPasswords { get; } = new ObservableCollection<PasswordEntry>();
-        public ObservableCollection<CategoryModel> Categories { get; } = new ObservableCollection<CategoryModel>();
+        public ObservableCollection<CategoryView> Categories { get; } = new ObservableCollection<CategoryView>();
 
-        public ICommand AddCommand { get; }
+        public ICommand AddCommand => new RelayCommand(AddPassword);
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
         
-        public MainViewModel(IDialogService dialogService, MainProcess mainProcess)
+        public MainViewModel(MainProcess mainProcess)
         {
             _mainProcess = mainProcess;
-            _dialogService = dialogService;
-
             _allPasswords = new ObservableCollection<PasswordEntry>(_mainProcess.GetPasswords().Select(PasswordEntryConverter.ToLocal).ToList());
 
             foreach (string category in _mainProcess.GetAllCategories())
             {
-                var vm = new CategoryModel(category);
+                var vm = new CategoryView(category);
                 vm.SelectionChanged += OnCategorySelectionChanged;
                 Categories.Add(vm);
             }
 
             UpdateFilter();
 
-            AddCommand = new RelayCommand(AddPassword);
             EditCommand = new RelayCommand<PasswordEntry>(EditPassword);
             DeleteCommand = new RelayCommand<PasswordEntry>(DeletePassword);
         }
@@ -152,30 +146,19 @@ namespace PasswordManager.WPF.Models
 
         private void AddPassword()
         {
-            var dataVM = new DataViewModel();
-
-            string serviceFrom = "";
-            string categoryFrom = "";
-            string urlFrom = "";
-            string loginFrom = "";
-            string passwordFrom = "";
-
-            bool? result = _dialogService.ShowDialog<DataViewModel>(dataVM);
-
-            if (result == true)
+            DataWindow addDataWindow = new DataWindow
             {
-                serviceFrom = dataVM.Service;
-                categoryFrom = dataVM.Category;
-                urlFrom = dataVM.Url;
-                loginFrom = dataVM.Login;
-                passwordFrom = dataVM.Password;
+                Title = "Добавить запись",
+            };
 
+            if (addDataWindow.ShowDialog() == true)
+            {
                 PasswordEntry newItem = new PasswordEntry();
-                newItem.Service = serviceFrom;
-                newItem.Category = categoryFrom;
-                newItem.Url = urlFrom;
-                newItem.Login = loginFrom;
-                newItem.Password = passwordFrom;
+                newItem.Service = addDataWindow.Service;
+                newItem.Category = addDataWindow.Category;
+                newItem.Url = addDataWindow.Url;
+                newItem.Login = addDataWindow.Login;
+                newItem.Password = addDataWindow.Password;
 
                 var tuple = _mainProcess.FindRepetition(PasswordEntryConverter.ToExternal(newItem));
                 if (tuple != null)
@@ -210,35 +193,24 @@ namespace PasswordManager.WPF.Models
 
         private void EditPassword(PasswordEntry item)
         {
-            var dataVM = new DataViewModel();
-            dataVM.Service = item.Service;
-            dataVM.Category = item.Category;
-            dataVM.Url = item.Url;
-            dataVM.Login = item.Login;
-            dataVM.Password = item.Password;
-
-            string serviceFrom = "";
-            string categoryFrom = "";
-            string urlFrom = "";
-            string loginFrom = "";
-            string passwordFrom = "";
-
-            bool? result = _dialogService.ShowDialog<DataViewModel>(dataVM);
-
-            if (result == true)
+            var changeDataWindow = new DataWindow
             {
-                if (item.Service == serviceFrom &&
-                    item.Category == categoryFrom &&
-                    item.Url == urlFrom &&
-                    item.Login == loginFrom &&
-                    item.Password == passwordFrom) return;
+                Title = "Изменить запись",
+                Service = item.Service,
+                Url = item.Url,
+                Category = item.Category,
+                Login = item.Login,
+                Password = item.Password
+            };
 
-                item.Service = serviceFrom;
-                item.Category = categoryFrom;
-                item.Url = urlFrom;
-                item.Login = loginFrom;
-                item.Password = passwordFrom;
-            }
+            if (changeDataWindow.ShowDialog() != true) return;
+            
+            item.Service = changeDataWindow.Service;
+            item.Url = changeDataWindow.Url;
+            item.Category = changeDataWindow.Category;
+            item.Login = changeDataWindow.Login;
+            item.Password = changeDataWindow.Password;
+
             _mainProcess.ChangePassword(PasswordEntryConverter.ToExternal(item));
             _mainProcess.SavePasswords();
             UpdatePasswords();
@@ -253,6 +225,5 @@ namespace PasswordManager.WPF.Models
                 _mainProcess.SavePasswords();
             }
         }
-
     }
 }
